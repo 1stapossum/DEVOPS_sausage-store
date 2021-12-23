@@ -41,5 +41,17 @@ pipeline {
                 archiveArtifacts(artifacts: 'frontend/dist/frontend/*')
             }
         }
+    
+
+        stage('Send notification')  {
+            steps   {
+                sh 'curl -X POST -H "Content-type: application/json" -d \'{"text\":"Александр Волохов собрал приложение."}\' https://hooks.slack.com/services/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'
+            }
+        }
     }
+    
 }
+
+
+
+
