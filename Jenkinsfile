@@ -1,6 +1,16 @@
 pipeline {
     agent any // Выбираем Jenkins агента, на котором будет происходить сборка: нам нужен любой
 
+
+	parameters      {
+        text(name:'Fname',
+        defaultValue: 'Александр')
+        text(name:'Sname',
+        defaultValue: 'Волохов')
+
+        }
+
+
     triggers {
         pollSCM('H/5 * * * *') // Запускать будем автоматически по крону примерно раз в 5 минут
     }
@@ -44,9 +54,29 @@ pipeline {
     
 
         stage('Send notification')  {
-            steps   {
-                sh 'curl -X POST -H "Content-type: application/json" -d \'{"text\":"Александр Волохов собрал приложение."}\' https://hooks.slack.com/services/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'
+
+	environment {
+                SLACK_TOKEN = credentials('bb7f927a-7c55-4e0f-9b57-9dd84caadaf8')
             }
+
+
+
+            steps   {
+            	//	sh ('curl -X POST -H "Content-type: application/json" \
+		 //	-d \'{"text\":"А В собрал приложение."}\' \
+		//	https://hooks.slack.com/services/TPV9DP0N4/B02PSECK8JF/$SLACK_TOKEN')  //Вот не смог вставить параметры(((
+
+
+	///		sh ('curl -X POST -H "Content-type: application/json" \
+	///		-d \'{"text\":"${params.Fname} ${params.Sname} собрал приложение."}\' \
+	///		https://hooks.slack.com/services/TPV9DP0N4/B02PSECK8JF/$SLACK_TOKEN')   /// 
+
+
+			sh """curl -X POST -H "Content-type: application/json"\
+			-d \'{"text\":" ${params.Fname} ${params.Sname} собрал приложение."}\'  \
+			https://hooks.slack.com/services/TPV9DP0N4/B02PSECK8JF/$SLACK_TOKEN"""
+
+		}
         }
     }
     
