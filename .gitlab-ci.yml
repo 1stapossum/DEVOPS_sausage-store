@@ -20,6 +20,7 @@ build-code-job:
   - cd ..
   - mkdir sausage-store-0.0.1
   - mv backend/target/sausage-store-0.0.1-SNAPSHOT.jar sausage-store-0.0.1/sausage-store-0.0.1.jar
+  - cp sausage-store-0.0.1/sausage-store-0.0.1.jar backend
   - mv frontend/dist/frontend sausage-store-0.0.1/public_html
   artifacts:
     paths:
