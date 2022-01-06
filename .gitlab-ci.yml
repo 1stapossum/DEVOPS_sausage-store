@@ -10,6 +10,10 @@ stages:
 - test
 build-code-job:
   stage: build
+  cache:
+    - key:
+        files:
+        - .jar
   script:
   - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
   #BACK
