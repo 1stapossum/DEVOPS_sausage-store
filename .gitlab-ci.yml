@@ -25,6 +25,7 @@ build-code-job:
     paths:
     - sausage-store-0.0.1/public_html
     - sausage-store-0.0.1/sausage-store-0.0.1.jar
+    - ${CI_PROJECT_DIR}/.m2/
     reports:
       dotenv: CI_JOB_ID.TXT
 spotbugs-sast:
@@ -45,8 +46,8 @@ upload-release:
   - "curl --verbose -sSL -H \"JOB-TOKEN: ${CI_JOB_TOKEN}\" -T sausage-store-0.0.1.zip
     \"${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sausage-store/${CI_COMMIT_SHA}/\"
     \n"
-  - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр
-    Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
+ # - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр
+  #  Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
 sast:
   stage: test
 include:
