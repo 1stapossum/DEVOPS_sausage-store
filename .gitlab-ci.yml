@@ -27,6 +27,12 @@ build-code-job:
     - sausage-store-0.0.1/sausage-store-0.0.1.jar
     reports:
       dotenv: CI_JOB_ID.TXT
+spotbugs-sast:
+  variables:
+    COMPILE: "false"
+    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository       
+
+
 upload-release:
   stage: release
   script:
