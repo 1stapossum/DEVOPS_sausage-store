@@ -61,7 +61,6 @@ upload-release:
   #  Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
 sast:
   stage: test
-  script:
-    - cp sausage-store-0.0.1/sausage-store-0.0.1.jar $CI_PROJECT_DIR/backend  #Костыль
+  
 include:
 - template: Security/SAST.gitlab-ci.yml
