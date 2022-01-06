@@ -12,8 +12,10 @@ build-code-job:
   stage: build
   script:
   - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
+  #BACK
   - cd backend
   - mvn package -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
+  #Front
   - cd ../frontend
   - npm install
   - npm run build
@@ -30,6 +32,7 @@ build-code-job:
     - ${CI_PROJECT_DIR}/.m2/
     reports:
       dotenv: CI_JOB_ID.TXT
+
 spotbugs-sast:
   variables:
     COMPILE: "false"
