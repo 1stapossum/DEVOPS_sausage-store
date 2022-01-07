@@ -69,6 +69,7 @@ include:
 sonarq:
   stage: test
   script:
+  - docker -v
   - cd backend
   - sonar-scanner 
     -Dsonar.projectKey=antinitrino_sausage-store_AX4zkHK5WyGwrBh1KekJ 
