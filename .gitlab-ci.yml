@@ -61,6 +61,5 @@ upload-release:
   #  Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
 sast:
   stage: test
-  
 include:
 - template: Security/SAST.gitlab-ci.yml
