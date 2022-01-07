@@ -72,5 +72,5 @@ sonarq:
   - cd ${CI_PROJECT_DIR}/.m2/repository
   - mvn sonar:sonar 
     -Dsonar.projectKey=02_Alexander_Volokhov_Backend_AX4zkHK5WyGwrBh1KekJ 
-    -Dsonar.host.url=https://sonarqube.praktikum-services.ru 
-    -Dsonar.login=ac49ff3fedf85a9afc0cf5913a5630ace19d36a0
+    -Dsonar.host.url=$SONAR_URL 
+    -Dsonar.login=$SONAR_TOKEN
