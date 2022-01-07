@@ -72,7 +72,7 @@ sonarq:
   variables:
         SONAR_ANALYSIS_MODE: issues
   script:
-  - cd backend
+  #- cd backend
   - sonar-scanner 
     -Dsonar.projectKey=antinitrino_sausage-store_AX4zkHK5WyGwrBh1KekJ 
     -Dsonar.sources=. 
