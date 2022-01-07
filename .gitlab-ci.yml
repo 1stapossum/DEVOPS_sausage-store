@@ -31,7 +31,7 @@ build-code-job:
   - mv backend/target/sausage-store-0.0.1-SNAPSHOT.jar sausage-store-0.0.1/sausage-store-0.0.1.jar
   #- echo "$CI_PROJECT_DIR"
   
-  #- ls backend
+  
   - mv frontend/dist/frontend sausage-store-0.0.1/public_html
   artifacts:
     paths:
@@ -69,7 +69,7 @@ include:
 sonarq:
   stage: test
   script:
-  - cd backend
+  - cd ${CI_PROJECT_DIR}/.m2/repository
   - mvn sonar:sonar 
     -Dsonar.projectKey=02_Alexander_Volokhov_Backend_AX4zkHK5WyGwrBh1KekJ 
     -Dsonar.host.url=https://sonarqube.praktikum-services.ru 
