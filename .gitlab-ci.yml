@@ -68,6 +68,7 @@ include:
 
 sonarq:
   stage: test
+  image: ciricihq/gitlab-sonar-scanner
   script:
   - cd backend
   - sonar-scanner 
