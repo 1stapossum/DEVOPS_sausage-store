@@ -75,8 +75,7 @@ sonarq:
   #- cd backend
   - sonar-scanner 
     -Dsonar.projectKey=antinitrino_sausage-store_AX4zkHK5WyGwrBh1KekJ 
-    -Dsonar.sources=backend/src/
-    -Dsonar.host.url=$SONAR_URL 
-    -Dsonar.login=$SONAR_TOKEN
-    -Dsonar.gitlab.project_id=git@gitlab.praktikum-services.ru:antinitrino/sausage-store.git
+    -Dsonar.sources=. 
+    -Dsonar.host.url=https://sonarqube.praktikum-services.ru 
+    -Dsonar.login=ac49ff3fedf85a9afc0cf5913a5630ace19d36a0
     
