@@ -75,7 +75,8 @@ sonarq:
   - cd backend
   - sonar-scanner 
     -Dsonar.projectKey=antinitrino_sausage-store_AX4zkHK5WyGwrBh1KekJ
-    -Dsonar.sources=src
+    -Dsonar.sources=src/main/java/com/yandex/practicum/devops
     -Dsonar.host.url=https://sonarqube.praktikum-services.ru
     -Dsonar.login=ac49ff3fedf85a9afc0cf5913a5630ace19d36a0
+    -Dsonar.java.binaries=target/classes
     
