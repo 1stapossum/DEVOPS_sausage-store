@@ -69,6 +69,7 @@ include:
 sonarq:
   stage: test
   script:
+  - cd backend
   - mvn sonar:sonar 
     -Dsonar.projectKey=02_Alexander_Volokhov_Backend_AX4zkHK5WyGwrBh1KekJ 
     -Dsonar.host.url=https://sonarqube.praktikum-services.ru 
