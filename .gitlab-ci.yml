@@ -80,4 +80,5 @@ sonarq:
     -Dsonar.host.url=https://sonarqube.praktikum-services.ru
     -Dsonar.login=ac49ff3fedf85a9afc0cf5913a5630ace19d36a0
     -Dsonar.java.binaries=.
+    -Dsonar.java.libraries=.
     
