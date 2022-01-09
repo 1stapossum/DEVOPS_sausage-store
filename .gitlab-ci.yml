@@ -68,8 +68,8 @@ include:
 
 sonarq:
   stage: test
-  #image: ciricihq/gitlab-sonar-scanner
-  image: maven:3.8-openjdk-11
+  image: ciricihq/gitlab-sonar-scanner  # РАБОТАЕТ
+  #image: maven:3.8-openjdk-11  #НЕ РАБОТЕТ
   
   variables:
       #  SONAR_ANALYSIS_MODE: issues
