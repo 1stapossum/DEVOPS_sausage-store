@@ -66,7 +66,7 @@ sast:
 include:
 - template: Security/SAST.gitlab-ci.yml
 
-sonarq:
+sonarq-backend-check:
   stage: test
   #image: ciricihq/gitlab-sonar-scanner  # РАБОТАЕТ
   image: maven:3.8.3-openjdk-16
@@ -82,3 +82,12 @@ sonarq:
     -Dsonar.java.binaries=.
     #-Dsonar.java.libraries=.
     #-Dsonar.sources=.
+
+sonarq-frontend-check:
+  image:
+    name: sonarsource/sonar-scanner-cli:4.6
+    entrypoint: [""]
+    script:
+    - sonar-scanner -Dsonar.qualitygate.wait=true
+  allow_failure: true
+  
