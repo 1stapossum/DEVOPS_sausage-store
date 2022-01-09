@@ -68,18 +68,14 @@ include:
 
 sonarq:
   stage: test
-  #image: ciricihq/gitlab-sonar-scanner  # РАБОТАЕТ
-  image: maven:3.6.3-jdk-11
+  image: ciricihq/gitlab-sonar-scanner  # РАБОТАЕТ
+  #image: maven:3.6.3-jdk-11
   
   variables:
       #  SONAR_ANALYSIS_MODE: issues
   script:
   - cd backend
-  - sonar-scanner 
-    -Dsonar.projectKey=02_alexander_volokhov_backend
-    -Dsonar.sources=.
-    -Dsonar.host.url=$SONAR_URL
-    -Dsonar.login=$SONAR_TOKEN
-    -Dsonar.java.binaries=.
-    -Dsonar.java.libraries=.
-    
+  - mvn sonar:sonar
+    -Dsonar.projectKey=02_alexander_volokhov_frontend
+    -Dsonar.host.url=https://sonarqube.praktikum-services.ru
+    -Dsonar.login=ac49ff3fedf85a9afc0cf5913a5630ace19d36a0
