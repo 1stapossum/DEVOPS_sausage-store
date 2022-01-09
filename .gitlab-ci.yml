@@ -76,7 +76,7 @@ sonarq:
   script:
   - cd backend
   - sonar-scanner 
-    -Dsonar.projectKey02_alexander_volokhov_backend
+    -Dsonar.projectKey=02_alexander_volokhov_backend
     -Dsonar.sources=.
     -Dsonar.host.url=$SONAR_URL
     -Dsonar.login=$SONAR_TOKEN
