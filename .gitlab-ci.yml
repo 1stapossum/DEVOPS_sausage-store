@@ -76,7 +76,7 @@ sonarq-backend-check:
   script:
   - cd backend
   - mvn sonar:sonar
-    -Dsonar.projectKey=02_alexander_volokhov_frontend
+    -Dsonar.projectKey=02_alexander_volokhov_backend
     -Dsonar.host.url=$SONAR_URL
     -Dsonar.login=$SONAR_TOKEN
     -Dsonar.java.binaries=.
