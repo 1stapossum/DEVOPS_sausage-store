@@ -77,8 +77,8 @@ sonarq:
   - cd backend
   - mvn sonar:sonar
     -Dsonar.projectKey=02_alexander_volokhov_frontend
-    -Dsonar.host.url=https://sonarqube.praktikum-services.ru
-    -Dsonar.login=ac49ff3fedf85a9afc0cf5913a5630ace19d36a0
+    -Dsonar.host.url=$SONAR_URL
+    -Dsonar.login=$SONAR_TOKEN
     -Dsonar.java.binaries=.
     #-Dsonar.java.libraries=.
     #-Dsonar.sources=.
