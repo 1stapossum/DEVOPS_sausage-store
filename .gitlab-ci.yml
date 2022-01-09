@@ -76,7 +76,7 @@ sonarq:
   script:
   - cd backend
   - sonar-scanner 
-    -Dsonar.projectKey=antinitrino_sausage-store_AX4zkHK5WyGwrBh1KekJ
+    -Dsonar.projectKey02_alexander_volokhov_backend
     -Dsonar.sources=.
     -Dsonar.host.url=$SONAR_URL
     -Dsonar.login=$SONAR_TOKEN
