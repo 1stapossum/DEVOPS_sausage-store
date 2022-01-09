@@ -77,6 +77,7 @@ sonarq-backend-check:
   - cd backend
   - mvn sonar:sonar
     -Dsonar.projectKey=02_alexander_volokhov_backend
+    -Dsonar.projectName=02_alexander_volokhov_backend
     -Dsonar.host.url=$SONAR_URL
     -Dsonar.login=$SONAR_TOKEN
     -Dsonar.java.binaries=.
@@ -93,6 +94,7 @@ sonarq-frontend-check:
   - sonar-scanner 
     -Dsonar.qualitygate.wait=true
     -Dsonar.projectKey=02_alexander_volokhov_frontend
+    -Dsonar.projectName=02_alexander_volokhov_frontend
     -Dsonar.sources=.
     -Dsonar.host.url=$SONAR_URL
     -Dsonar.login=$SONAR_TOKEN
