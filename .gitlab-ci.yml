@@ -84,10 +84,10 @@ sonarq-backend-check:
     #-Dsonar.sources=.
 
 sonarq-frontend-check:
+  stage: test
   image:
     name: sonarsource/sonar-scanner-cli:4.6
     entrypoint: [""]
-    script:
-    - sonar-scanner -Dsonar.qualitygate.wait=true
-  allow_failure: true
-  
+  script:
+  - cd frontend
+  - sonar-scanner -Dsonar.qualitygate.wait=true
