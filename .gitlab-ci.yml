@@ -65,9 +65,9 @@ sonarq-frontend-check:
     -Dsonar.qualitygate.wait=true
     -Dsonar.projectKey=02_alexander_volokhov_frontend
     -Dsonar.projectName=02_alexander_volokhov_frontend
-    -Dsonar.sources=.
     -Dsonar.host.url=$SONAR_URL
     -Dsonar.login=$SONAR_TOKEN
+    #-Dsonar.sources=.
     #-Dsonar.java.binaries=.
     #-Dsonar.java.libraries=.
 
