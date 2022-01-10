@@ -11,6 +11,7 @@ build-job:
   - mvn package -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
   - echo ${CI_PROJECT_DIR} 
   - ls ${CI_PROJECT_DIR}/backend/target
+  - ls ${CI_PROJECT_DIR}/.m2/repository
   - cd ../frontend
   - npm install
   - npm run build
