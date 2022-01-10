@@ -44,13 +44,24 @@ sonarq-backend-check:
   variables:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   script:
-  - cd backend 
-  - mvn verify sonar:sonar 
-    -Dsonar.qualitygate.wait=true 
+  - cd backend
+  - mvn sonar:sonar
     -Dsonar.projectKey=02_alexander_volokhov_backend
-    -Dsonar.host.url=$SONAR_URL 
-    -Dsonar.login=$SONARQUBE_TOKEN 
     -Dsonar.projectName=02_alexander_volokhov_backend
+    -Dsonar.host.url=$SONAR_URL
+    -Dsonar.login=$SONAR_TOKEN
+    -Dsonar.java.binaries=.
+    #-Dsonar.java.libraries=.
+    #-Dsonar.sources=.
+  
+    #script:      #
+  #- cd backend 
+  #- mvn verify sonar:sonar 
+  #  -Dsonar.qualitygate.wait=true 
+  #  -Dsonar.projectKey=02_alexander_volokhov_backend
+  #  -Dsonar.host.url=$SONAR_URL 
+  #  -Dsonar.login=$SONARQUBE_TOKEN 
+  #  -Dsonar.projectName=02_alexander_volokhov_backend
 
 sonarq-frontend-check:
   stage: test
