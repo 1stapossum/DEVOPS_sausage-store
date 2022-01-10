@@ -68,8 +68,8 @@ sonarq-frontend-check:
     -Dsonar.sources=.
     -Dsonar.host.url=$SONAR_URL
     -Dsonar.login=$SONAR_TOKEN
-    -Dsonar.java.binaries=.
-    -Dsonar.java.libraries=.
+    #-Dsonar.java.binaries=.
+    #-Dsonar.java.libraries=.
 
 upload-release:
   stage: release
