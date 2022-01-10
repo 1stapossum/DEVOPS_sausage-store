@@ -3,17 +3,12 @@ stages:
 - test
 - release
 
-build-backend:
+build-job:
   stage: build
   script:
   - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
-  #BACK
   - cd backend
   - mvn package -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
-
-build-frontend:
-  stage: build
-  script:
   - cd ../frontend
   - npm install
   - npm run build
@@ -21,7 +16,7 @@ build-frontend:
   - mkdir sausage-store-0.0.1
   - mv backend/target/sausage-store-0.0.1-SNAPSHOT.jar sausage-store-0.0.1/sausage-store-0.0.1.jar
   - mv frontend/dist/frontend sausage-store-0.0.1/public_html
-  
+ 
   artifacts:
     paths:
     - sausage-store-0.0.1/public_html
