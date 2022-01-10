@@ -15,6 +15,7 @@ build-job:
   - npm run build
   - cd ..
   - mkdir sausage-store-0.0.1
+  - cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar ..
   - mv backend/target/sausage-store-0.0.1-SNAPSHOT.jar sausage-store-0.0.1/sausage-store-0.0.1.jar
   - mv frontend/dist/frontend sausage-store-0.0.1/public_html
  
