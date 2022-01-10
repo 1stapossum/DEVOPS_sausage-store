@@ -9,7 +9,7 @@ build-job:
   - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
   - cd backend
   - mvn package -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
-  - ls ${CI_PROJECT_DIR}/.m2/repository
+  - ls ${CI_PROJECT_DIR}
   - cd ../frontend
   - npm install
   - npm run build
