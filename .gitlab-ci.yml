@@ -45,7 +45,8 @@ sonarq-backend-check:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   script:
   - cd backend
-  - mvn sonar:sonar
+  - mvn verify sonar:sonar
+    -Dsonar.qualitygate.wait=true
     -Dsonar.projectKey=02_alexander_volokhov_backend
     -Dsonar.projectName=02_alexander_volokhov_backend
     -Dsonar.host.url=$SONAR_URL
