@@ -9,6 +9,7 @@ build-job:
   - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
   - cd backend
   - mvn package -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
+  
   - cd ../frontend
   - npm install
   - npm run build
@@ -41,7 +42,7 @@ sonarq-backend-check:
   image: maven:3.8.3-openjdk-16
   
   variables:
-      #  SONAR_ANALYSIS_MODE: issues
+      SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   script:
   - cd backend
   - mvn sonar:sonar
