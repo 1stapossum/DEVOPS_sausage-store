@@ -1,38 +1,27 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
 - build
-- release
 - test
-build-code-job:
+- release
+
+build-backend:
   stage: build
-  cache:
-    - key:
-        files:
-        - .jar
-        - .pom
   script:
   - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
   #BACK
   - cd backend
   - mvn package -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
-  
 
-  #Front
+build-frontend:
+  stage: build
+  script:
   - cd ../frontend
   - npm install
   - npm run build
   - cd ..
   - mkdir sausage-store-0.0.1
   - mv backend/target/sausage-store-0.0.1-SNAPSHOT.jar sausage-store-0.0.1/sausage-store-0.0.1.jar
-  #- echo "$CI_PROJECT_DIR"
-  
-  
   - mv frontend/dist/frontend sausage-store-0.0.1/public_html
+  
   artifacts:
     paths:
     - sausage-store-0.0.1/public_html
@@ -44,23 +33,8 @@ build-code-job:
 spotbugs-sast:
   variables:
     COMPILE: "false"
-    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository       
+    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
 
-
-upload-release:
-  stage: release
-  script:
-  - echo "$MY_TOKEN"
-  - echo "Get artifact from job ${ARTIFACT_JOB_ID}"
-  - 'curl -k --verbose --location --output sausage-store-0.0.1.zip -H "PRIVATE-TOKEN:
-    ${MY_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/jobs/${ARTIFACT_JOB_ID}/artifacts"
-
-'
-  - "curl --verbose -sSL -H \"JOB-TOKEN: ${CI_JOB_TOKEN}\" -T sausage-store-0.0.1.zip
-    \"${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sausage-store/${CI_COMMIT_SHA}/\"
-    \n"
- # - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр
-  #  Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
 sast:
   stage: test
 include:
@@ -100,3 +74,16 @@ sonarq-frontend-check:
     -Dsonar.login=$SONAR_TOKEN
     -Dsonar.java.binaries=.
     -Dsonar.java.libraries=.
+
+upload-release:
+  stage: release
+  script:
+  - echo "$MY_TOKEN"
+  - echo "Get artifact from job ${ARTIFACT_JOB_ID}"
+  - 'curl -k --verbose --location --output sausage-store-0.0.1.zip -H "PRIVATE-TOKEN:
+    ${MY_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/jobs/${ARTIFACT_JOB_ID}/artifacts"'
+  - "curl --verbose -sSL -H \"JOB-TOKEN: ${CI_JOB_TOKEN}\" -T sausage-store-0.0.1.zip
+    \"${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sausage-store/${CI_COMMIT_SHA}/\"
+    \n"
+ # - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр
+  #  Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
