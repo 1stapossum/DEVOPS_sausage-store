@@ -9,12 +9,14 @@ build-job:
   - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
   - cd backend
   - mvn package -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
+  - echo ${CI_PROJECT_DIR} 
   - ls ${CI_PROJECT_DIR}
   - cd ../frontend
   - npm install
   - npm run build
   - cd ..
   - mkdir sausage-store-0.0.1
+  - cp 
   - mv backend/target/sausage-store-0.0.1-SNAPSHOT.jar sausage-store-0.0.1/sausage-store-0.0.1.jar
   - mv frontend/dist/frontend sausage-store-0.0.1/public_html
  
