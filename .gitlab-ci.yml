@@ -49,7 +49,7 @@ sonarq-backend-check:
     -Dsonar.projectName=02_alexander_volokhov_backend
     -Dsonar.host.url=$SONAR_URL
     -Dsonar.login=$SONAR_TOKEN
-    -Dsonar.java.binaries=.
+    #-Dsonar.java.binaries=.
     #-Dsonar.java.libraries=.
     #-Dsonar.sources=.
 
