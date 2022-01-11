@@ -18,7 +18,7 @@ build-job:
   - cd ..
   - mkdir sausage-store-0.0.1
   #- cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar ${CI_PROJECT_DIR}/backend
-  - cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar backend/sausage-store-0.0.1.jar
+  - cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar backend/sausage-store-0.0.1.jar  # А вот и непомогло))
   ## Даже с подсказкой про JAR файл так и не додумался(( 
     ## Насчет очистки дистрибутива даже думать и не начинал(((
   - mv backend/target/sausage-store-0.0.1-SNAPSHOT.jar sausage-store-0.0.1/sausage-store-0.0.1.jar
