@@ -1,0 +1,122 @@
+## Script created for app deployment on intuitum/ubuntu-server-20.04 VM
+
+
+
+#/bin/bash
+
+#apk -U upgrade -a && apk --no-cache update
+#apk add npm
+
+apt-get -yq update
+apt install -fyq openjdk-16-jre
+apt install -y unzip
+
+curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+sleep 10
+apt-get -y install npm
+sleep 10
+#sudo npm install
+#sudo npm run build
+npm install --global http-server
+
+
+export DLDIR=/tmp/ssgtmp
+export FE_ISNTDIR=/var/www-data
+export BE_ISNTDIR=/var/backend
+
+####1_Download
+mkdir dir $DLDIR
+curl --header "PRIVATE-TOKEN: xzFmMeuiRFz83__c8mae" https://gitlab.praktikum-services.ru/api/v4/projects/182/packages/generic/sausage-store/d767b07c6baf96d5ac8f1a65150548f1c39c6c49/sausage-store-0.0.1.zip --output /tmp/ssgtmp/sausage-store-0.0.1.zip   # Как здесь скрыть токен пока не понял
+
+
+####2_UNZIP
+echo "Unzipping....";  unzip $DLDIR/sausage-store-0.0.1.zip -d $DLDIR &> /dev/null
+#unzip $DLDIR/sausage-store-0.0.1.zip -d $DLDIR
+
+
+####3_INSTALL FRONTEND
+echo "Coping Frontend files.."
+mkdir $FE_ISNTDIR
+cp -fr $DLDIR/sausage-store-0.0.1/public_html/* $FE_ISNTDIR
+
+
+
+####4_INSTALL_BACKEND
+mkdir $BE_ISNTDIR
+cp $DLDIR/sausage-store-0.0.1/sausage-store-0.0.1.jar $BE_ISNTDIR
+
+####5_Add serv dirs
+mkdir -p /var/www-data/htdocs/reports
+mkdir -p /log
+####6_Creating Frontend and Backend unit files
+sudo cat > /etc/systemd/system/sausage-store.service <<\eof
+
+#! /bin/bash
+[Unit]
+Description=sausage-store
+
+[Service]
+User=root
+StandardOutput=file:/log/out.log
+StandardError=file:/log/out.log
+
+Environment="REPORT_PATH=/var/www-data/htdocs/reports"
+Environment="LOG_PATH=/log/"
+Environment="LOGGING_LEVEL_ROOT=INFO"
+
+ExecStart=java -jar /var/backend/sausage-store-0.0.1.jar
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -15 $MAINPID
+KillMode=process
+
+CapabilityBoundingSet=CAP_IPC_LOCK CAP_CHOWN CAP_DAC_READ_SEARCH CAP_KILL CAP_NET_ADMIN CAP_SYS_NICE CAP_FOWNER CAP_SETGID CAP_SETUID CAP_SYS_ADMIN CAP_SYS_RESOURCE CAP_BLOCK_SUSPEND
+Type=simple
+NotifyAccess=main
+#PIDFile=/var/run/sausage-store.pid
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+eof
+
+sudo cat > /etc/systemd/system/sausage-store-front.service <<\eof
+[Unit]
+Description=sausage-store-front
+
+[Service]
+User=root
+#StandardOutput=file:/log/out.log
+#StandardError=file:/log/out.log
+
+Environment="REPORT_PATH=/var/www-data/htdocs/reports"
+Environment="TTY=pts/2"
+#Environment="LOG_PATH=/log/"
+#Environment="LOGGING_LEVEL_ROOT=INFO"
+
+ExecStart=sudo http-server /var/www-data/ -p 80 --proxy http://localhost:8080
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -15 $MAINPID
+KillMode=process
+#CapabilityBoundingSet=CAP_IPC_LOCK CAP_CHOWN CAP_DAC_READ_SEARCH CAP_KILL CAP_NET_ADMIN CAP_SYS_NICE CAP_FOWNER CAP_SETGID CAP_SETUID CAP_SYS_ADMIN CAP_SYS_RESOURCE CAP_BLOCK_SUSPEND
+Type=simple
+NotifyAccess=main
+#PIDFile=/var/run/sausage-store.pid
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+eof
+
+
+
+
+#### Restarting und enabling
+sudo systemctl daemon-reload
+sudo systemctl enable sausage-store-front
+sudo systemctl enable sausage-store
+####
+rm -rf $DLDIR
