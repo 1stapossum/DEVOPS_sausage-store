@@ -1,3 +1,6 @@
+variables:
+    VERSION: 1.0.${CI_PIPELINE_ID}
+
 stages:
 - build
 - test
@@ -8,7 +11,7 @@ build-job:
   script:
   - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
   - cd backend
-  - mvn package -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
+  - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
   - echo ${CI_PROJECT_DIR} 
   - ls ${CI_PROJECT_DIR}/backend/target
   - ls ${CI_PROJECT_DIR}/.m2/
@@ -16,13 +19,14 @@ build-job:
   - npm install
   - npm run build
   - cd ..
-  - mkdir sausage-store-0.0.1
+  #- mkdir sausage-store-0.0.1
+  - mkdir sausage-store-${VERSION}
   #- cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar ${CI_PROJECT_DIR}/backend
-  - cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar backend/sausage-store-0.0.1.jar  # А вот и непомогло))
+  #- cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar backend/sausage-store-0.0.1.jar  # А вот и непомогло))
   ## Даже с подсказкой про JAR файл так и не додумался(( 
     ## Насчет очистки дистрибутива даже думать и не начинал(((
-  - mv backend/target/sausage-store-0.0.1-SNAPSHOT.jar sausage-store-0.0.1/sausage-store-0.0.1.jar
-  - mv frontend/dist/frontend sausage-store-0.0.1/public_html
+  - mv backend/target/sausage-store-0.0.1-SNAPSHOT.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
+  - mv frontend/dist/frontend sausage-store-${VERSION}/public_html
  
   artifacts:
     paths:
