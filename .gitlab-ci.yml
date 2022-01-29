@@ -1,38 +1,40 @@
 variables:
-    VERSION: 1.0.${CI_PIPELINE_ID}
+  VERSION: 1.0.${CI_PIPELINE_ID}
 
 stages:
-- build
-- test
-- release
+  - build
+  - test
+  - release
 
 build-job:
   stage: build
   script:
-  - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
-  - cd backend
-  - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
-  - echo ${CI_PROJECT_DIR} 
-  - ls ${CI_PROJECT_DIR}/backend/target
-  - ls ${CI_PROJECT_DIR}/.m2/
-  - cd ../frontend
-  - npm install
-  - npm run build
-  - cd ..
-  #- mkdir sausage-store-0.0.1
-  - mkdir sausage-store-${VERSION}
-  #- cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar ${CI_PROJECT_DIR}/backend
-  #- cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar backend/sausage-store-0.0.1.jar  # А вот и непомогло))
-  ## Даже с подсказкой про JAR файл так и не додумался(( 
+    - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
+    - cd backend
+    - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
+    - echo ${CI_PROJECT_DIR}
+    - ls ${CI_PROJECT_DIR}/backend/target
+    - ls ${CI_PROJECT_DIR}/.m2/
+    - cd ../frontend
+    - npm install
+    - npm run build
+    - cd ..
+    #- mkdir sausage-store-0.0.1
+    - mkdir sausage-store-${VERSION}
+    #- cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar ${CI_PROJECT_DIR}/backend
+    #- cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar backend/sausage-store-0.0.1.jar  # А вот и непомогло))
+    ## Даже с подсказкой про JAR файл так и не додумался((
     ## Насчет очистки дистрибутива даже думать и не начинал(((
-  - mv backend/target/sausage-store-0.0.1-SNAPSHOT.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
-  - mv frontend/dist/frontend sausage-store-${VERSION}/public_html
- 
+    #- mv backend/target/sausage-store-${VERSION}.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
+    - mv frontend/dist/frontend sausage-store-${VERSION}/public_html
+
   artifacts:
     paths:
-    - sausage-store-0.0.1/public_html
-    - sausage-store-0.0.1/sausage-store-0.0.1.jar
-    - ${CI_PROJECT_DIR}/.m2/
+      #- sausage-store-0.0.1/public_html
+      #- sausage-store-0.0.1/sausage-store-0.0.1.jar
+      - sausage-store-${VERSION}/public_html
+      - sausage-store-${VERSION}/sausage-store-${VERSION}.jar
+      - ${CI_PROJECT_DIR}/.m2/ #УБРАТЬ!!! postscript???
     reports:
       dotenv: CI_JOB_ID.TXT
 
@@ -44,35 +46,35 @@ spotbugs-sast:
 sast:
   stage: test
 include:
-- template: Security/SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
 
 sonarq-backend-check:
   stage: test
   #image: ciricihq/gitlab-sonar-scanner  # РАБОТАЕТ
   image: maven:3.8.3-openjdk-16
-  
+
   variables:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
     GIT_DEPTH: "0"
   script:
-  - cd backend
-  - mvn verify sonar:sonar
-    -Dsonar.qualitygate.wait=true
-    -Dsonar.projectKey=02_alexander_volokhov_backend
-    -Dsonar.projectName=02_alexander_volokhov_backend
-    -Dsonar.host.url=$SONAR_URL
-    -Dsonar.login=$SONAR_TOKEN
-    #-Dsonar.java.binaries=.
-    #-Dsonar.java.libraries=.
-    #-Dsonar.sources=.
-  
-    #script:      #
-  #- cd backend 
-  #- mvn verify sonar:sonar 
-  #  -Dsonar.qualitygate.wait=true 
+    - cd backend
+    - mvn verify sonar:sonar
+      -Dsonar.qualitygate.wait=true
+      -Dsonar.projectKey=02_alexander_volokhov_backend
+      -Dsonar.projectName=02_alexander_volokhov_backend
+      -Dsonar.host.url=$SONAR_URL
+      -Dsonar.login=$SONAR_TOKEN
+      #-Dsonar.java.binaries=.
+      #-Dsonar.java.libraries=.
+      #-Dsonar.sources=.
+
+      #script:      #
+  #- cd backend
+  #- mvn verify sonar:sonar
+  #  -Dsonar.qualitygate.wait=true
   #  -Dsonar.projectKey=02_alexander_volokhov_backend
-  #  -Dsonar.host.url=$SONAR_URL 
-  #  -Dsonar.login=$SONARQUBE_TOKEN 
+  #  -Dsonar.host.url=$SONAR_URL
+  #  -Dsonar.login=$SONARQUBE_TOKEN
   #  -Dsonar.projectName=02_alexander_volokhov_backend
 
 sonarq-frontend-check:
@@ -84,26 +86,27 @@ sonarq-frontend-check:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
     GIT_DEPTH: "0"
   script:
-  - cd frontend
-  - sonar-scanner 
-    -Dsonar.qualitygate.wait=true
-    -Dsonar.projectKey=02_alexander_volokhov_frontend
-    -Dsonar.projectName=02_alexander_volokhov_frontend
-    -Dsonar.host.url=$SONAR_URL
-    -Dsonar.login=$SONAR_TOKEN
-    #-Dsonar.sources=.
-    #-Dsonar.java.binaries=.
-    #-Dsonar.java.libraries=.
+    - cd frontend
+    - sonar-scanner
+      -Dsonar.qualitygate.wait=true
+      -Dsonar.projectKey=02_alexander_volokhov_frontend
+      -Dsonar.projectName=02_alexander_volokhov_frontend
+      -Dsonar.host.url=$SONAR_URL
+      -Dsonar.login=$SONAR_TOKEN
+      #-Dsonar.sources=.
+      #-Dsonar.java.binaries=.
+      #-Dsonar.java.libraries=.
 
 upload-release:
   stage: release
   script:
-  - echo "$MY_TOKEN"
-  - echo "Get artifact from job ${ARTIFACT_JOB_ID}"
-  - 'curl -k --verbose --location --output sausage-store-0.0.1.zip -H "PRIVATE-TOKEN:
-    ${MY_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/jobs/${ARTIFACT_JOB_ID}/artifacts"'
-  - "curl --verbose -sSL -H \"JOB-TOKEN: ${CI_JOB_TOKEN}\" -T sausage-store-0.0.1.zip
-    \"${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sausage-store/${CI_COMMIT_SHA}/\"
-    \n"
- # - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр
-  #  Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
+  - tar czvf sausage-store-${VERSION}.tar.gz sausage-store-${VERSION}/public_html #!
+  - curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}" --upload-file sausage-store-${VERSION}.tar.gz ${NEXUS_FRONTEND_REPO_URL}/sausage-store/${VERSION}/sausage-store-${VERSION}.tar.gz
+  
+  - cd backend
+  - mvn -s settings.xml deploy -DskipTests
+ 
+  
+  #- 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр  Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
+  #- 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр Волохов собрал приложение 1.0.${CI_PIPELINE_ID}.\"}" http://ptsv2.com/t/Apossum/post'
+  - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Вышла новая версия сосисочной — ${VERSION}. Скачать фронт можно по ссылке — ${NEXUS_FRONTEND_REPO_URL}/sausage-store/${VERSION}/sausage-store-${VERSION}.tar.gz. Скачать бэкенд можно по ссылке — ${NEXUS_BACKEND_REPO_URL}/com/yandex/practicum/devops/sausage-store/${VERSION}/sausage-store-${VERSION}.jar\"}" ${SLACK_URL}'
