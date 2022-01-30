@@ -107,6 +107,6 @@ upload-release:
   - mvn -s settings.xml deploy -DskipTests
  
   
-  #- 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр  Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
+  # - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр  Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
   #- 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр Волохов собрал приложение 1.0.${CI_PIPELINE_ID}.\"}" http://ptsv2.com/t/Apossum/post'
   - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Вышла новая версия сосисочной — ${VERSION}. Скачать фронт можно по ссылке — ${NEXUS_FRONTEND_REPO_URL}/sausage-store/${VERSION}/sausage-store-${VERSION}.tar.gz. Скачать бэкенд можно по ссылке — ${NEXUS_BACKEND_REPO_URL}/com/yandex/practicum/devops/sausage-store/${VERSION}/sausage-store-${VERSION}.jar\"}" ${SLACK_URL}'
