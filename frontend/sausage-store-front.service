@@ -1,0 +1,26 @@
+Unit]
+Description=sausage-store-front
+
+[Service]
+User=root
+#StandardOutput=file:/log/out.log
+#StandardError=file:/log/out.log
+
+Environment="REPORT_PATH=/var/www-data/htdocs/reports"
+Environment="TTY=pts/2"
+#Environment="LOG_PATH=/log/"
+#Environment="LOGGING_LEVEL_ROOT=INFO"
+
+ExecStart=sudo http-server /var/www-data/dist/frontend/ -p 80 --proxy http://localhost:8080 
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -15 $MAINPID
+KillMode=process
+
+#CapabilityBoundingSet=CAP_IPC_LOCK CAP_CHOWN CAP_DAC_READ_SEARCH CAP_KILL CAP_NET_ADMIN CAP_SYS_NICE CAP_FOWNER CAP_SETGID CAP_SETUID CAP_SYS_ADMIN CAP_SYS_RESOURCE CAP_BLOCK_SUSPEND
+Type=simple
+NotifyAccess=main
+#PIDFile=/var/run/sausage-store.pid
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
