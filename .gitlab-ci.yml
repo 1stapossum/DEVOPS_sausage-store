@@ -1,3 +1,6 @@
+variables:
+  VERSION: 1.0.${CI_PIPELINE_ID}
+
 before_script:
   #устанавливаем ssh-agent для удобства аутентификации по ssh
   - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -6,34 +9,39 @@ before_script:
   - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   - mkdir -p ~/.ssh
   - chmod 600 ~/.ssh
+  - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
 
 stages:
-#  - module-pipelines
+  - module-pipelines
   - deploy
 
-#frontend:
-#  stage: module-pipelines
-#  trigger:
-#    include:
-#      - "/frontend/.gitlab-ci.yml"
-#    strategy: depend #depend нужен, если какой-нибудь дочерний пайплайн свалился, мы знали, что общий пайплайн тоже идёт с ошибкой
-#  only:
-#    changes: #как только происходит изменение в папке frontend, запускается дочерний пайплайн, который лежит в этой папке
-#      - frontend/**/*
-#
-#backend:
-#  stage: module-pipelines
-#  trigger:
-#    include:
-#      - "/backend/.gitlab-ci.yml"
-#    strategy: depend 
-#  only:
-#    changes:  #как только происходит изменение в папке backend, запускается дочерний пайплайн, который лежит в этой папке!
-#      - backend/**/* 
+frontend:
+  stage: module-pipelines
+  trigger:
+    include:
+      - "/frontend/.gitlab-ci.yml"
+    strategy: depend #depend нужен, если какой-нибудь дочерний пайплайн свалился, мы знали, что общий пайплайн тоже идёт с ошибкой
+  only:
+    changes: #как только происходит изменение в папке frontend, запускается дочерний пайплайн, который лежит в этой папке
+      - frontend/**/*
+
+backend:
+  stage: module-pipelines
+  trigger:
+    include:
+      - "/backend/.gitlab-ci.yml"
+    strategy: depend 
+  only:
+    changes:  #как только происходит изменение в папке backend, запускается дочерний пайплайн, который лежит в этой папке!!
+      - backend/**/* 
 
 deploy:
   stage: deploy
   script:
-     #выполняем простую команду для проверки
-      - ssh-keyscan 130.193.48.24
-      - ssh ${DEV_USER}@${DEV_HOST} "id" 
+     
+    - scp ./backend/sausage-store.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store.service
+    - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "DEV_USER=${DEV_USER}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}"; export "NEXUS_BACKEND_REPO_URL=${NEXUS_BACKEND_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}"; setsid /bin/bash -s " < ./backend/deploy.sh 
+
+    - scp ./frontend/sausage-store-front.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store-front.service
+    - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "DEV_USER=${DEV_USER}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}"; export "NEXUS_FRONTEND_REPO_URL=${NEXUS_FRONTEND_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}"; setsid /bin/bash -s " < ./frontend/deploy.sh 

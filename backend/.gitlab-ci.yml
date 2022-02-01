@@ -14,7 +14,7 @@ build:
     - cd backend
     - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
     - ls target
-    #- cp backend/target/sausage-store-${VERSION}.jar backend/sausage-store-${VERSION}.jar  #Where file gone?!?
+    #- cp backend/target/sausage-store-${VERSION}.jar backend/sausage-store-${VERSION}.jar  #Where file gone?!?!
   rules:
     - changes:
         - backend/*

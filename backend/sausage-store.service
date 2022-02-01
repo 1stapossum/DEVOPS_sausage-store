@@ -1,24 +1,25 @@
+#! /bin/bash
 [Unit]
 Description=sausage-store
 
 [Service]
-User=jarservice
-StandardOutput=file:/log/out.log
-StandardError=file:/log/out.log
+User=student
+StandardOutput=file:/home/student/log/out.log
+StandardError=file:/home/student/log/out.log
 
-Environment="REPORT_PATH=/var/www-data/htdocs/reports"
-Environment="LOG_PATH=/log/"
+Environment="REPORT_PATH=/home/student/var/www-data/htdocs/reports"
+Environment="LOG_PATH=/home/student/log/"
 Environment="LOGGING_LEVEL_ROOT=INFO"
 
-ExecStart=java -jar /home/jarservice/sausage-store-0.0.1.jar
+ExecStart=java -jar /home/student/sausage-store.jar
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStop=/bin/kill -15 $MAINPID
 KillMode=process
 
-CapabilityBoundingSet=CAP_IPC_LOCK CAP_CHOWN CAP_DAC_READ_SEARCH CAP_KILL CAP_NET_ADMIN CAP_SYS_NICE CAP_FOWNER CAP_SETGID CAP_SETUID CAP_SYS_ADMIN CAP_SYS_RESOURCE CAP_BLOCK_SUSPEND
+#CapabilityBoundingSet=CAP_IPC_LOCK CAP_CHOWN CAP_DAC_READ_SEARCH CAP_KILL CAP_NET_ADMIN CAP_SYS_NICE CAP_FOWNER CAP_SETGID CAP_SETUID CAP_SYS_ADMIN CAP_SYS_RESOURCE CAP_BLOCK_SUSPEND
 Type=simple
 NotifyAccess=main
-PIDFile=/var/run/sausage-store.pid
+#PIDFile=/var/run/sausage-store.pid
 Restart=on-failure
 
 [Install]

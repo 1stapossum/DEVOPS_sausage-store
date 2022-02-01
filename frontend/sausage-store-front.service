@@ -2,16 +2,16 @@ Unit]
 Description=sausage-store-front
 
 [Service]
-User=root
+User=student
 #StandardOutput=file:/log/out.log
 #StandardError=file:/log/out.log
 
-Environment="REPORT_PATH=/var/www-data/htdocs/reports"
+Environment="REPORT_PATH=/home/student/var/www-data/htdocs/reports"
 Environment="TTY=pts/2"
 #Environment="LOG_PATH=/log/"
 #Environment="LOGGING_LEVEL_ROOT=INFO"
 
-ExecStart=sudo http-server /var/www-data/dist/frontend/ -p 80 --proxy http://localhost:8080 
+ExecStart=sudo http-server /home/student/sausage-store-front/ -p 80 --proxy http://localhost:8080 
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStop=/bin/kill -15 $MAINPID
 KillMode=process
