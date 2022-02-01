@@ -35,4 +35,5 @@ deploy:
   stage: deploy
   script:
      #выполняем простую команду для проверки
-     - ssh ${DEV_USER}@${DEV_HOST} "id" 
+      - ssh-keyscan 130.193.48.24
+      - ssh ${DEV_USER}@${DEV_HOST} "id" 
