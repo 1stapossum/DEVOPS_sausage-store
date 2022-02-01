@@ -3,27 +3,27 @@ variables:
 
 stages:
   - build
+  - test
   - release
 
-build:
-stage: build
-script:
+build-job:
+  stage: build
+  script:
   - cd frontend
   - npm install
   - npm run build
   - cd ..
   - mkdir sausage-store-${VERSION}
   - mv frontend/dist/frontend sausage-store-${VERSION}/public_html
-artifacts:
-paths:
-  - sausage-store-${VERSION}/public_html
-rules:
-  - changes:
-  - frontend/*
-sast:
-  stage: test
-include:
-  - template: Security/SAST.gitlab-ci.yml
+  artifacts:
+    paths:
+    - sausage-store-${VERSION}/public_html
+
+  rules:
+      - changes:
+           - frontend/*
+
+
 sonarq-frontend-check:
   stage: test
   image:
@@ -41,8 +41,12 @@ sonarq-frontend-check:
       -Dsonar.host.url=$SONAR_URL
       -Dsonar.login=$SONAR_TOKEN
 
-release:
-stage: release
-script:
+upload-release:
+  stage: release
+  script:
   - tar czvf sausage-store-${VERSION}.tar.gz sausage-store-${VERSION}/public_html #!
   - curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}" --upload-file sausage-store-${VERSION}.tar.gz ${NEXUS_FRONTEND_REPO_URL}/sausage-store/${VERSION}/sausage-store-${VERSION}.tar.gz
+
+  rules:
+      - changes:
+           - frontend/*
