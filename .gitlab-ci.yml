@@ -38,6 +38,7 @@ backend:
 
 deploy:
   stage: deploy
+  when: manual
   script:
      
     - scp ./backend/sausage-store.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store.service
@@ -45,3 +46,6 @@ deploy:
 
     - scp ./frontend/sausage-store-front.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store-front.service
     - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "DEV_USER=${DEV_USER}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}"; export "NEXUS_FRONTEND_REPO_URL=${NEXUS_FRONTEND_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}"; setsid /bin/bash -s " < ./frontend/deploy.sh 
+
+    # Раздельный deploy конечно правильнее, но ошибка /scripts-182-98505/step_script: line 147: apt-get: command not found заставила меня оставить так как есть.
+    # Ибо решение данной проблемы потребует драгоценное время.
