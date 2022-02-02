@@ -1,112 +1,51 @@
 variables:
   VERSION: 1.0.${CI_PIPELINE_ID}
 
+before_script:
+  #устанавливаем ssh-agent для удобства аутентификации по ssh
+  - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  #сохраняем сгенеренный ранее приватный ключ для раннера
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 600 ~/.ssh
+  - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+
 stages:
-  - build
-  - test
-  - release
+  - module-pipelines
+  - deploy
 
-build-job:
-  stage: build
+frontend:
+  stage: module-pipelines
+  trigger:
+    include:
+      - "/frontend/.gitlab-ci.yml"
+    strategy: depend #depend нужен, если какой-нибудь дочерний пайплайн свалился, мы знали, что общий пайплайн тоже идёт с ошибкой
+  only:
+    changes: #как только происходит изменение в папке frontend, запускается дочерний пайплайн, который лежит в этой папке
+      - frontend/**/*
+
+backend:
+  stage: module-pipelines
+  trigger:
+    include:
+      - "/backend/.gitlab-ci.yml"
+    strategy: depend 
+  only:
+    changes:  #как только происходит изменение в папке backend, запускается дочерний пайплайн, который лежит в этой папке!!
+      - backend/**/* 
+
+deploy:
+  stage: deploy
+  when: manual
   script:
-    - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
-    - cd backend
-    - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
-    - echo ${CI_PROJECT_DIR}
-    - ls ${CI_PROJECT_DIR}/backend/target
-    - ls ${CI_PROJECT_DIR}/.m2/
-    - cd ../frontend
-    - npm install
-    - npm run build
-    - cd ..
-    #- mkdir sausage-store-0.0.1
-    - mkdir sausage-store-${VERSION}
-    #- cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar ${CI_PROJECT_DIR}/backend
-    #- cp backend/target/sausage-store-0.0.1-SNAPSHOT.jar backend/sausage-store-0.0.1.jar  # А вот и непомогло))
-    ## Даже с подсказкой про JAR файл так и не додумался((
-    ## Насчет очистки дистрибутива даже думать и не начинал(((
-    #- mv backend/target/sausage-store-${VERSION}.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
-    - mv frontend/dist/frontend sausage-store-${VERSION}/public_html
+     
+    - scp ./backend/sausage-store.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store.service
+    - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "DEV_USER=${DEV_USER}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}"; export "NEXUS_BACKEND_REPO_URL=${NEXUS_BACKEND_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}"; setsid /bin/bash -s " < ./backend/deploy.sh 
 
-  artifacts:
-    paths:
-      #- sausage-store-0.0.1/public_html
-      #- sausage-store-0.0.1/sausage-store-0.0.1.jar
-      - sausage-store-${VERSION}/public_html
-      - sausage-store-${VERSION}/sausage-store-${VERSION}.jar
-      - ${CI_PROJECT_DIR}/.m2/ #УБРАТЬ!!! postscript???
-    reports:
-      dotenv: CI_JOB_ID.TXT
+    - scp ./frontend/sausage-store-front.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store-front.service
+    - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "DEV_USER=${DEV_USER}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}"; export "NEXUS_FRONTEND_REPO_URL=${NEXUS_FRONTEND_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}"; setsid /bin/bash -s " < ./frontend/deploy.sh 
 
-spotbugs-sast:
-  variables:
-    COMPILE: "false"
-    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
-
-sast:
-  stage: test
-include:
-  - template: Security/SAST.gitlab-ci.yml
-
-sonarq-backend-check:
-  stage: test
-  #image: ciricihq/gitlab-sonar-scanner  # РАБОТАЕТ
-  image: maven:3.8.3-openjdk-16
-
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-    GIT_DEPTH: "0"
-  script:
-    - cd backend
-    - mvn verify sonar:sonar
-      -Dsonar.qualitygate.wait=true
-      -Dsonar.projectKey=02_alexander_volokhov_backend
-      -Dsonar.projectName=02_alexander_volokhov_backend
-      -Dsonar.host.url=$SONAR_URL
-      -Dsonar.login=$SONAR_TOKEN
-      #-Dsonar.java.binaries=.
-      #-Dsonar.java.libraries=.
-      #-Dsonar.sources=.
-
-      #script:      #
-  #- cd backend
-  #- mvn verify sonar:sonar
-  #  -Dsonar.qualitygate.wait=true
-  #  -Dsonar.projectKey=02_alexander_volokhov_backend
-  #  -Dsonar.host.url=$SONAR_URL
-  #  -Dsonar.login=$SONARQUBE_TOKEN
-  #  -Dsonar.projectName=02_alexander_volokhov_backend
-
-sonarq-frontend-check:
-  stage: test
-  image:
-    name: sonarsource/sonar-scanner-cli:4.6
-    entrypoint: [""]
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-    GIT_DEPTH: "0"
-  script:
-    - cd frontend
-    - sonar-scanner
-      -Dsonar.qualitygate.wait=true
-      -Dsonar.projectKey=02_alexander_volokhov_frontend
-      -Dsonar.projectName=02_alexander_volokhov_frontend
-      -Dsonar.host.url=$SONAR_URL
-      -Dsonar.login=$SONAR_TOKEN
-      #-Dsonar.sources=.
-      #-Dsonar.java.binaries=.
-      #-Dsonar.java.libraries=.
-
-upload-release:
-  stage: release
-  script:
-  - tar czvf sausage-store-${VERSION}.tar.gz sausage-store-${VERSION}/public_html #!
-  - curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}" --upload-file sausage-store-${VERSION}.tar.gz ${NEXUS_FRONTEND_REPO_URL}/sausage-store/${VERSION}/sausage-store-${VERSION}.tar.gz
-  
-  - cd backend
-  - mvn -s settings.xml deploy -DskipTests
- 
-  
-  # - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр  Волохов собрал приложение ${CI_COMMIT_BRANCH}. \"}" $SLACK_URL'
-  #- 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Александр Волохов собрал приложение 1.0.${CI_PIPELINE_ID}.\"}" http://ptsv2.com/t/Apossum/post'
-  - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Вышла новая версия сосисочной — ${VERSION}. Скачать фронт можно по ссылке — ${NEXUS_FRONTEND_REPO_URL}/sausage-store/${VERSION}/sausage-store-${VERSION}.tar.gz. Скачать бэкенд можно по ссылке — ${NEXUS_BACKEND_REPO_URL}/com/yandex/practicum/devops/sausage-store/${VERSION}/sausage-store-${VERSION}.jar\"}" ${SLACK_URL}'
+    # Раздельный deploy конечно правильнее, но ошибка /scripts-182-98505/step_script: line 147: apt-get: command not found заставила меня оставить так как есть.
+    # Ибо решение данной проблемы потребует драгоценное время.
