@@ -68,4 +68,6 @@ deploy:
   script:
     - scp ./frontend/sausage-store-front.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store-front.service
     - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "DEV_USER=${DEV_USER}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}"; export "NEXUS_FRONTEND_REPO_URL=${NEXUS_FRONTEND_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}"; setsid /bin/bash -s " < ./frontend/deploy.sh 
-  
+  environment:
+    name: staging
+    url: http://130.193.48.24/
