@@ -16,7 +16,7 @@ build-job:
   - cd ..
   - mkdir sausage-store-${VERSION}
   - mv frontend/dist/frontend sausage-store-${VERSION}/public_html
-  - touch sausage-store-${VERSION}/public_html/test2.txt
+  - touch sausage-store-${VERSION}/public_html/test3.txt
   artifacts:
     paths:
     - sausage-store-${VERSION}/public_html
