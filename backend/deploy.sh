@@ -1,5 +1,5 @@
 #! /bin/bash
-#Если свалится одна из команд, рухнет и весь скрипт!
+#Если свалится одна из команд, рухнет и весь скрипт!!
 set -xe
 #Перезаливаем дескриптор сервиса на ВМ для деплоя
 sudo cp -rf sausage-store.service /etc/systemd/system/sausage-store.service

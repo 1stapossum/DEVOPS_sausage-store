@@ -9,8 +9,6 @@ curl -u ${NEXUS_REPO_USER}:${NEXUS_REPO_PASS} -o /home/student/sausage-store.tar
 tar xzf sausage-store.tar.gz
 cp sausage-store-${VERSION}/public_html/* sausage-store-front
 rm -rf sausage-store-${VERSION}
-
-
 #sudo cp ./sausage-store.jar /home/student/sausage-store.jar||true #"jar||true" говорит, если команда обвалится — продолжай
 #Обновляем конфиг systemd с помощью рестарта!!!
 sudo systemctl daemon-reload
