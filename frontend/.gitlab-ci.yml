@@ -16,7 +16,7 @@ build-job:
   - cd ..
   - mkdir sausage-store-${VERSION}
   - mv frontend/dist/frontend sausage-store-${VERSION}/public_html
-  - touch sausage-store-${VERSION}/public_html/test3.txt
+  #- touch sausage-store-${VERSION}/public_html/test3.txt # Тест роллбэка. Работает. Роллбэк всмысле.
   artifacts:
     paths:
     - sausage-store-${VERSION}/public_html
