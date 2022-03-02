@@ -13,3 +13,22 @@
 
 1. chmod +x install.axe
 2. ./install.axe
+
+
+####Chaper 6 Task 1
+
+##    PostgreSQL single node
+#1. host=rc1a-y0auvxa8pmxlqg94.mdb.yandexcloud.net \
+#2. port=6432 \
+#3. dbname=student \
+#4. user=student \
+
+
+
+
+ #   PostgreSQL 2 node cluster
+
+#1. host=rc1a-7qbzfolspe11dctz.mdb.yandexcloud.net,rc1a-n767l0c2rfzu5bgw.mdb.yandexcloud.net \
+#2. port=6432 \
+#3. dbname=student \
+#4. user=student \
