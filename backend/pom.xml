@@ -31,7 +31,13 @@
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
     </properties>
     <dependencies>
-
+    
+        <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-core</artifactId>
+        <version>8.0.5</version>
+    
+    </dependency>
        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -128,6 +134,18 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+            <version>8.0.5</version>
+            <configuration>
+                <locations>
+                    <location>classpath:db/migration</location>
+                </locations>
+            </configuration>
+        </plugin>
+
         </plugins>
     </build>     
 </project>
