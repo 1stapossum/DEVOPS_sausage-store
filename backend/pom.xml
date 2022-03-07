@@ -140,9 +140,9 @@
             <artifactId>flyway-maven-plugin</artifactId>
             <version>8.0.5</version>
             <configuration>
-                <locations>
-                    <location>classpath:db/migration</location>
-                </locations>
+                <user>student</user> 
+                <password>student</password>
+                <url>jdbc:sqlserver://rc1a-7qbzfolspe11dctz.mdb.yandexcloud.net:6432;database=student</url>
             </configuration>
         </plugin>
 
