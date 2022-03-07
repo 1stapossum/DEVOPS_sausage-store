@@ -141,7 +141,7 @@
             <version>8.0.5</version>
             <configuration>
                 <user>student</user> 
-                <password>student</password>
+                <password>${env.FLYWAY_DB_PASSWORD}</password>
                 <url>jdbc:postgresql://rc1a-7qbzfolspe11dctz.mdb.yandexcloud.net:6432;database=student</url>
             </configuration>
         </plugin>
