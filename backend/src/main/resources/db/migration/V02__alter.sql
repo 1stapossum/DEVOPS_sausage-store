@@ -1,3 +1,3 @@
 ALTER TABLE product
-    ALTER COLUMN name TYPE character varying(20),
-    ALTER COLUMN picture_url TYPE character varying(100);
+    ALTER COLUMN name TYPE varchar(20),
+    ALTER COLUMN picture_url TYPE varchar(100);
