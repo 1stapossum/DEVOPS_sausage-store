@@ -1,2 +1,3 @@
-ALTER COLUMN 'name' TYPE character varying(20);
-ALTER COLUMN 'picture_url' TYPE character varying(100);
+ALTER TABLE products
+    ALTER COLUMN name TYPE character varying(20),
+    ALTER COLUMN picture_url TYPE character varying(100);
