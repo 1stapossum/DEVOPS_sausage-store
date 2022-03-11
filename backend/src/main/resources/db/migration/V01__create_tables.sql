@@ -24,7 +24,7 @@ create table product
 create table test
 (
     quantity integer not null,
-    order_id bigint not null,
-    product_id bigint not null
+    test_id bigint not null,
+    test2_id bigint not null
 
 );
