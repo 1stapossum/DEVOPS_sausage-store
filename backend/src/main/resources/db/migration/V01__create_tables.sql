@@ -20,3 +20,11 @@ create table product
     picture_url varchar(255),
     price double precision
 ); 
+
+create table test
+(
+    quantity integer not null,
+    order_id bigint not null,
+    product_id bigint not null
+
+);
