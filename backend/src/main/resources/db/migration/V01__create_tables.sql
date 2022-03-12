@@ -1,8 +1,7 @@
-
-create table test2
+create table ttt
 (
-    quantity integer not null,
-    test2_id bigint not null,
-    test22_id bigint not null
+    ttt integer not null,
+    ttt_id bigint not null,
+    ttt_id bigint not null
 
 );
