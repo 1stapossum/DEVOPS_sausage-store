@@ -11,7 +11,7 @@ Environment="REPORT_PATH=/home/student/var/www-data/htdocs/reports"
 Environment="LOG_PATH=/home/student/log/"
 Environment="LOGGING_LEVEL_ROOT=INFO"
 
-ExecStart=java -Dspring.datasource.url=jdbc:postgresql://rc1a-7qbzfolspe11dctz.mdb.yandexcloud.net:6432/student \
+ExecStart=java -Dspring.datasource.url=jdbc:postgresql://rc1a-y0auvxa8pmxlqg94.mdb.yandexcloud.net:6432/student \
 -Dspring.datasource.username=student \
 -Dspring.datasource.password=123_456_789 \
 -Dspring.flyway.baselineOnMigrate=true  \
