@@ -14,7 +14,7 @@ Environment="LOGGING_LEVEL_ROOT=INFO"
 ExecStart=java -Dspring.datasource.url=jdbc:postgresql://rc1a-y0auvxa8pmxlqg94.mdb.yandexcloud.net:6432/student \
 -Dspring.datasource.username=student \
 -Dspring.datasource.password=123_456_789 \
-#-Dspring.flyway.baselineOnMigrate=true  \
+-Dspring.flyway.baselineOnMigrate=true  \
 -jar /home/student/sausage-store.jar \
 
 ExecReload=/bin/kill -HUP $MAINPID
