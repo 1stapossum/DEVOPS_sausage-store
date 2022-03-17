@@ -18,7 +18,7 @@
 ####Chaper 6 Task 1
 
 ##    PostgreSQL single node
-#1. host=rc1a-y0auvxa8pmxlqg94.mdb.yandexcloud.net \
+#1. host=rc1a-cm76mpziuy1spfrt.mdb.yandexcloud.net \
 #2. port=6432 \
 #3. dbname=student \
 #4. user=student \
@@ -28,7 +28,10 @@
 
  #   PostgreSQL 2 node cluster
 
-#1. host=rc1a-7qbzfolspe11dctz.mdb.yandexcloud.net,rc1a-n767l0c2rfzu5bgw.mdb.yandexcloud.net \
+#1. host=host=rc1a-1epo2mxr9q82223j.mdb.yandexcloud.net,rc1a-f7t7txx6hhql6j2d.mdb.yandexcloud.net \
 #2. port=6432 \
 #3. dbname=student \
 #4. user=student \
+
+
+# Пароль ко всем базам 123_456_789
