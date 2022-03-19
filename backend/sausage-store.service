@@ -13,7 +13,7 @@ Environment="LOGGING_LEVEL_ROOT=INFO"
 
 ExecStart=java \
 -Dspring.datasource.url=jdbc:postgresql://rc1b-g1jepkizus0qah86.mdb.yandexcloud.net:6432/devops \
--Dspring.data.mongodb.uri=mongodb://antinitirino:Testusr1234@rc1b-nczpq63snuc5a3z2.mdb.yandexcloud.net:27018/antinitrino?tls=true \
+-Dspring.data.mongodb.uri=mongodb://antinitrino:Testusr1234@rc1b-nczpq63snuc5a3z2.mdb.yandexcloud.net:27018/antinitrino?tls=true \
 -Dspring.datasource.username=student \
 -Dspring.datasource.password=student123 \
 -Dspring.flyway.baselineOnMigrate=true  \
