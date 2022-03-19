@@ -13,7 +13,7 @@ EnvironmentFile=/etc/systemd/system/sausage-store-env
 
 ExecStart=java \
 -Dspring.datasource.url=jdbc:postgresql://rc1b-g1jepkizus0qah86.mdb.yandexcloud.net:6432/devops \
--Dspring.data.mongodb.uri=mongodb://antinitrino:Testusr1234@rc1b-nczpq63snuc5a3z2.mdb.yandexcloud.net:27018/antinitrino?tls=true \
+-Dspring.data.mongodb.uri=mongodb://antinitrino:${MONGO_PASSWORD}@rc1b-nczpq63snuc5a3z2.mdb.yandexcloud.net:27018/antinitrino?tls=true \
 -Dspring.datasource.username=student \
 -Dspring.datasource.password=${PSQL_DB_PASSWORD} \
 -Dspring.flyway.baselineOnMigrate=true  \
