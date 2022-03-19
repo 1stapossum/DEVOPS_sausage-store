@@ -69,7 +69,7 @@ deploy:
   - chmod 644 ~/.ssh/known_hosts
   script:  
   - scp ./backend/sausage-store.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store.service
-  - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "DEV_USER=${DEV_USER}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}"; export "NEXUS_BACKEND_REPO_URL=${NEXUS_BACKEND_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}"; setsid /bin/bash -s " < ./backend/deploy.sh 
+  - ssh ${DEV_USER}@${DEV_HOST} "export "MONGO_PASSWORD=${MONGO_PASSWORD}"; export "PSQL_DB_PASSWORD=${PSQL_DB_PASSWORD}"; export "CURRENT_VERSION=${VERSION}"; export "DEV_USER=${DEV_USER}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}"; export "NEXUS_BACKEND_REPO_URL=${NEXUS_BACKEND_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}"; setsid /bin/bash -s " < ./backend/deploy.sh 
   environment:
     name: staging-backend
     url: http://130.193.48.24/
