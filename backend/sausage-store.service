@@ -11,7 +11,9 @@ Environment="REPORT_PATH=/home/student/var/www-data/htdocs/reports"
 Environment="LOG_PATH=/home/student/log/"
 Environment="LOGGING_LEVEL_ROOT=INFO"
 
-ExecStart=java -Dspring.datasource.url=jdbc:postgresql://rc1a-1epo2mxr9q82223j.mdb.yandexcloud.net:6432/student \
+ExecStart=java \
+-Dspring.datasource.url=jdbc:postgresql://${PSQL_HOST}:${PSQL_PORT}/${PSQL_DBNAME} \
+-Dspring.data.mongodb.uri=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_DATABASE}:${MONGO_PORT}/db?tls=true \
 -Dspring.datasource.username=student \
 -Dspring.datasource.password=123_456_789 \
 -Dspring.flyway.baselineOnMigrate=true  \
