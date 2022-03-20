@@ -6,14 +6,16 @@ Description=sausage-store
 User=student
 StandardOutput=file:/home/student/log/out.log
 StandardError=file:/home/student/log/out.log
-
 Environment="REPORT_PATH=/home/student/var/www-data/htdocs/reports"
 Environment="LOG_PATH=/home/student/log/"
 Environment="LOGGING_LEVEL_ROOT=INFO"
+EnvironmentFile=/etc/systemd/system/sausage-store-env    
 
-ExecStart=java -Dspring.datasource.url=jdbc:postgresql://rc1a-1epo2mxr9q82223j.mdb.yandexcloud.net:6432/student \
+ExecStart=java \
+-Dspring.datasource.url=jdbc:postgresql://rc1b-g1jepkizus0qah86.mdb.yandexcloud.net:6432/devops \
+-Dspring.data.mongodb.uri=mongodb://antinitrino:${MONGO_PASSWORD}@rc1b-nczpq63snuc5a3z2.mdb.yandexcloud.net:27018/antinitrino?tls=true \
 -Dspring.datasource.username=student \
--Dspring.datasource.password=123_456_789 \
+-Dspring.datasource.password=${PSQL_DB_PASSWORD} \
 -Dspring.flyway.baselineOnMigrate=true  \
 -jar /home/student/sausage-store.jar \
 

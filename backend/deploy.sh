@@ -3,6 +3,12 @@
 set -xe
 #Перезаливаем дескриптор сервиса на ВМ для деплоя
 sudo cp -rf sausage-store.service /etc/systemd/system/sausage-store.service
+
+#sudo touch /home/student/sausage-store-env
+#sudo env | grep MONGO_PASSWORD > /home/student/sausage-store-env
+#sudo env | grep PSQL_DB_PASSWORD >> /home/student/sausage-store-env
+sudo cp -rf sausage-store-env /etc/systemd/system/sausage-store-env
+
 #sudo rm -f /home/jarservice/sausage-store.jar||true
 #Переносим артефакт в нужную папку
 curl -u ${NEXUS_REPO_USER}:${NEXUS_REPO_PASS} -o /home/student/sausage-store.jar ${NEXUS_BACKEND_REPO_URL}/com/yandex/practicum/devops/sausage-store/${VERSION}/sausage-store-${VERSION}.jar
