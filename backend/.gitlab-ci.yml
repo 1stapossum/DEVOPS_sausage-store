@@ -50,7 +50,7 @@ deploy-backend:
    
   before_script:
   - apk add openssh-client bash
-  - eval $(ssh-agent -s)
+  - eval "$(ssh-agent -s)"
    #- eval `ssh-agent -s`
   #сохраняем сгенеренный ранее приватный ключ для раннера
   - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
