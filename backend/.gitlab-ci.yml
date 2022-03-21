@@ -49,26 +49,19 @@ deploy-backend:
   # если хотим сделать деплой по кнопке
    
   before_script:
-  - apk add openssh-client bash
-  - eval "$(ssh-agent -s)"
-   #- eval `ssh-agent -s`
-  #сохраняем сгенеренный ранее приватный ключ для раннера
-  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-  - mkdir -p ~/.ssh
-  - chmod 600 ~/.ssh
-  - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-  - chmod 644 ~/.ssh/known_hosts
+    - apk add openssh-client bash
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
 
   script:
     - ssh ${DEV_USER}@${DEV_HOST}
-      "export "VERSION=${VERSION}"; 
-       export "SPRING_DATASOURCE_URL=${PSQL_HOST}"; 
+      "export "VERSION=${VERSION}";
+       export "SPRING_DATASOURCE_URL=${PSQL_DATASOURCE}";
        export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
-       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
-       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
-       export "CI_REGISTRY=${$CI_REGISTRY}"; setsid /bin/bash -s " < ./backend/backend_deploy.sh
-     
-      #/bin/bash -s " < ./backend/backend_deploy.sh 
-  environment:
-    name: staging-backend
-    url: http://130.193.48.24/
+       export "SPRING_DATASOURCE_PASSWORD=${PSQL_PASSWORD}";
+       export "SPRING_DATA_MONGODB_URI=${MONGO_DATA}";
+      /bin/bash -s " < ./backend/backend_deploy.sh
