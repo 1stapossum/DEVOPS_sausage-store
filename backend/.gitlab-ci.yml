@@ -49,8 +49,9 @@ deploy-backend:
   # если хотим сделать деплой по кнопке
    
   before_script:
-    - apk add openssh-client bash
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
+
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
@@ -58,11 +59,11 @@ deploy-backend:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - ssh ${DEV_USER}@${DEV_HOST}
-      "export "VERSION=${VERSION}"; \
-       export "SPRING_DATASOURCE_URL=${PSQL_HOST}"; \
-       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";  \
-       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}"; \
-       export "MONGO_PASSWORD=${MONGO_PASSWORD}"; \
-       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}"; \
+      "export "VERSION=${VERSION}"; 
+       export "SPRING_DATASOURCE_URL=${PSQL_HOST}"; 
+       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
+       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
+       export "MONGO_PASSWORD=${MONGO_PASSWORD}";
+       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
        export "CI_REGISTRY=${$CI_REGISTRY}";  setsid /bin/bash -s " < ./backend/backend_deploy.sh
       #/bin/bash -s " < ./backend/backend_deploy.sh 
