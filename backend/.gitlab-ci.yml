@@ -63,7 +63,8 @@ deploy-backend:
        export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
        export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
        export "MONGO_PASSWORD=${MONGO_PASSWORD}";
-       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE};
+       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
        export "CI_REGISTRY=${$CI_REGISTRY}";
 
-      /bin/bash -s " < ./backend/backend_deploy.sh 
+      setsid /bin/bash -s " < ./backend/backend_deploy.sh
+      #/bin/bash -s " < ./backend/backend_deploy.sh 
