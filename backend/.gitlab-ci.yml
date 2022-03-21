@@ -50,7 +50,7 @@ deploy-backend:
    
   before_script:
     - apk add openssh-client bash
-    #- eval \$(ssh-agent -s)
+    - eval $(ssh-client -s)
 
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
