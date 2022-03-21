@@ -59,9 +59,10 @@ deploy-backend:
 
   script:
     - ssh ${DEV_USER}@${DEV_HOST}
-      "export "VERSION=${VERSION}";
-       export "SPRING_DATASOURCE_URL=${PSQL_DATASOURCE}";
+      "export "CI_REGISTRY=${CI_REGISTRY}";
+       export "VERSION=${VERSION}";
+       export "SPRING_DATASOURCE_URL=${PSQL_HOST}";
        export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
-       export "SPRING_DATASOURCE_PASSWORD=${PSQL_PASSWORD}";
-       export "SPRING_DATA_MONGODB_URI=${MONGO_DATA}";
+       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
+       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
       /bin/bash -s " < ./backend/backend_deploy.sh
