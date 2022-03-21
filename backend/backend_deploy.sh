@@ -16,4 +16,4 @@ docker run -d --name backend \
     --restart always \
     --pull always \
     --env-file .env \
-    <реестр Gitlab Registry>/sausage-store/sausage-backend:latest
+    ${$CI_REGISTRY}/sausage-store/sausage-backend:latest
