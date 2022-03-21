@@ -1,3 +1,7 @@
+include:
+  - project: 'templates/ci'
+    file: 'DockerInDockerTemplate.yml'
+
 variables:
   VERSION: 1.0.${CI_PIPELINE_ID}
   MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
@@ -5,73 +9,61 @@ variables:
 
 stages:
   - build
-  - test
   - release
   - deploy
 
-build:
+build-backend:
   stage: build
+  image: docker:20.10.12-dind-rootless
+  before_script:
+    - until docker info; do sleep 1; done
+    # переменные CI_REGISTRY_USER, CI_REGISTRY_PASSWORD, CI_REGISTRY генерятся Гитлабом, их задавать не надо
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - cd backend
-    - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
-    - ls target
-    #- cp backend/target/sausage-store-${VERSION}.jar backend/sausage-store-${VERSION}.jar  #Where file gone?!?!
-  rules:
-    - changes:
-        - backend/*
+    - >
+      docker build
+      --build-arg VERSION=$VERSION
+      --tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
+      .
+    - docker push $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
 
-  artifacts:
-    paths:
-    - ${CI_PROJECT_DIR}/.m2/
-spotbugs-sast:
+upload-backend-latest:
   variables:
-    COMPILE: "false"
-    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
-sast:
-  stage: test
-include:
-  - template: Security/SAST.gitlab-ci.yml
-sonarq-backend-check:
-  stage: test
-
-  image: maven:3.8.3-openjdk-16
-
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-    GIT_DEPTH: "0"
-  script:
-    - cd backend
-    - mvn verify sonar:sonar
-      -Dsonar.qualitygate.wait=true
-      -Dsonar.projectKey=02_alexander_volokhov_backend
-      -Dsonar.projectName=02_alexander_volokhov_backend
-      -Dsonar.host.url=$SONAR_URL
-      -Dsonar.login=$SONAR_TOKEN
-
-release:
+    GIT_STRATEGY: none
+  image: docker:20.10.12-dind-rootless
   stage: release
+  before_script:
+    - until docker info; do sleep 1; done
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - cd backend
-    - mvn deploy -DskipTests -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH} -s settings.xml
+    - docker pull $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
+    # если образ прошел проверки в CI (сканирование, тесты и т.д), то тегаем latest
+    - docker tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/sausage-backend:latest
+    - docker push $CI_REGISTRY_IMAGE/sausage-backend:latest
 
-deploy:
+deploy-backend:
   stage: deploy
   when: manual
+  image: alpine:3.15.0
+  # если хотим сделать деплой по кнопке
+   
   before_script:
-  #устанавливаем ssh-agent для удобства аутентификации по ssh!!
-  - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-  - eval $(ssh-agent -s)
-  #сохраняем сгенеренный ранее приватный ключ для раннера
-  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-  - mkdir -p ~/.ssh
-  - chmod 600 ~/.ssh
-  - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-  - chmod 644 ~/.ssh/known_hosts
-  script:  
-  - touch sausage-store-env && env | grep ${MONGO_PASSWORD} > sausage-store-env && env | grep ${PSQL_DB_PASSWORD} >> sausage-store-env
-  - scp sausage-store-env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store-env
-  - scp ./backend/sausage-store.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store.service
-  - ssh ${DEV_USER}@${DEV_HOST} "export "MONGO_PASSWORD=${MONGO_PASSWORD}"; export "PSQL_DB_PASSWORD=${PSQL_DB_PASSWORD}"; export "CURRENT_VERSION=${VERSION}"; export "DEV_USER=${DEV_USER}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}"; export "NEXUS_BACKEND_REPO_URL=${NEXUS_BACKEND_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}"; setsid /bin/bash -s " < ./backend/deploy.sh 
-  environment:
-    name: staging-backend
-    url: http://130.193.48.24/
+    - apk add openssh-client bash
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh ${DEV_USER}@${DEV_HOST}
+      "export "VERSION=${VERSION}";
+       export "SPRING_DATASOURCE_URL=${PSQL_HOST}";
+       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
+       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
+       export "MONGO_PASSWORD=${MONGO_PASSWORD}";
+       export "SPRING_DATA_MONGODB_URI=mongodb://antinitrino:${MONGO_PASSWORD}@rc1b-nczpq63snuc5a3z2.mdb.yandexcloud.net:27018/antinitrino?tls=true";
+       export "CI_REGISTRY=${$CI_REGISTRY}";
+
+      /bin/bash -s " < ./backend/backend_deploy.sh 
