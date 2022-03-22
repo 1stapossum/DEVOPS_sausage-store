@@ -14,6 +14,6 @@ docker pull ${CI_REGISTRY_IMAGE}/sausage-backend:latest
 docker stop backend || true
 docker rm backend || true
 set -e
-docker run -d --name backend --network=sausage_network --restart always --env-file .env ${CI_REGISTRY_IMAGE}/sausage-backend:latest
+docker run -d --name backend --network=sausage_network --pull always --restart always --env-file .env ${CI_REGISTRY_IMAGE}/sausage-backend:latest
 
     #--pull always
