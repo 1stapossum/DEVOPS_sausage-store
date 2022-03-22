@@ -37,7 +37,8 @@ upload-backend-latest:
     - until docker info; do sleep 1; done
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - echo $CI_REGISTRY_IMAGE
+    - echo "$CI_REGISTRY_IMAGE"
+    - echo "$CI_REGISTRY"
     - docker pull $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
     # если образ прошел проверки в CI (сканирование, тесты и т.д), то тегаем latest
     - docker tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/sausage-backend:latest
@@ -59,6 +60,13 @@ deploy-backend:
     - chmod 644 ~/.ssh/known_hosts
 
   script:
+    - touch .env 
+    - env | grep ${MONGO_URI_WHOLE} > sausage-store-env 
+    - env | grep ${PSQL_DB_PASSWORD} >> sausage-store-env
+    - env | grep ${PSQL_HOST} >> sausage-store-env
+    - env | grep ${PSQL_USER} >> sausage-store-env
+    - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
+
     - ssh ${DEV_USER}@${DEV_HOST}
       "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
        export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
