@@ -11,13 +11,9 @@ set +e
 docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 docker pull ${CI_REGISTRY_IMAGE}/sausage-backend:latest
 #docker pull ${CI_REGISTRY}/sausage-store/sausage-backend:latest
-#docker stop backend || true
-#docker rm backend || true
+docker stop backend || true
+docker rm backend || true
 set -e
-docker run -d --name backend \
-    --network=sausage_network \
-    --restart always \
-    --env-file .env \
-    ${CI_REGISTRY_IMAGE}/sausage-store/sausage-backend:latest
+docker run -d --name backend --network=sausage_network --restart always --env-file .env ${CI_REGISTRY_IMAGE}/sausage-store/sausage-backend:latest
 
     #--pull always
