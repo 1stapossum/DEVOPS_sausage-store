@@ -7,7 +7,7 @@ SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}
 SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}
 EOF
 #docker network create -d bridge sausage_network || true
-docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 docker pull ${CI_REGISTRY}/sausage-store/sausage-backend:latest
 docker stop backend || true
 docker rm backend || true
