@@ -15,11 +15,15 @@ stages:
 build-backend:
   stage: build
   script:
+    - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
     - cd backend
     - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
   artifacts:
     paths:
     - /builds/antinitrino/sausage-store/backend/target/sausage-store-${VERSION}.jar
+    reports:
+      dotenv: CI_JOB_ID.TXT
+  
 
 upload-release:
   stage: release
