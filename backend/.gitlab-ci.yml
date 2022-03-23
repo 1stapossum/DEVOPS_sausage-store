@@ -9,7 +9,7 @@ variables:
 
 stages:
 - build
-- docker
+- release
 
 
 build-backend:
