@@ -22,6 +22,7 @@ build-backend:
   artifacts:
     paths:
     - /builds/antinitrino/sausage-store/backend/target/sausage-store-${VERSION}.jar
+    - ${MAVEN_REPO_PATH}
     reports:
       dotenv: CI_JOB_ID.TXT
   
