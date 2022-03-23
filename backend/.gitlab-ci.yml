@@ -38,10 +38,10 @@ build-docker:
     - docker push $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
 ###
 upload-container-latest:
+  stage: container-release
   variables:
     GIT_STRATEGY: none
   image: docker:20.10.12-dind-rootless
-  stage: release
   before_script:
     - until docker info; do sleep 1; done
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
