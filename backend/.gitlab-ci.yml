@@ -19,7 +19,7 @@ build-backend:
     - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
   artifacts:
     paths:
-    - ${CI_PROJECT_DIR}/.m2/
+    - /builds/antinitrino/sausage-store/backend/target/sausage-store-${VERSION}.jar
 
 #build-docker:
 #  stage: docker
