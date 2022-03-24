@@ -40,6 +40,8 @@ RUN curl https://storage.yandexcloud.net/cloud-certs/CA.pem -o YandexInternalRoo
 FROM openjdk:16-jdk-alpine
 ARG VERSION=${VERSION}
 WORKDIR /app
+RUN apt-get update && apt-get install -y curl
+CMD /bin/bash
 RUN curl https://storage.yandexcloud.net/cloud-certs/CA.pem -o /usr/src/app/YandexInternalRootCA.crt
 #COPY --from=builder /usr/src/app/YandexInternalRootCA.crt .
 RUN keytool -importcert -file YandexInternalRootCA.crt \
