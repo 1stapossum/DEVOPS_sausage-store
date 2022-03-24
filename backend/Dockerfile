@@ -1,3 +1,4 @@
+FROM maven:3.8.2-openjdk-16-slim
 FROM openjdk:16-jdk-alpine
 ARG VERSION=${VERSION}
 WORKDIR /app
