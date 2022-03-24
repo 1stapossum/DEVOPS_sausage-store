@@ -35,13 +35,13 @@ RUN curl https://storage.yandexcloud.net/cloud-certs/CA.pem -o YandexInternalRoo
 #FROM maven:3.8.2-openjdk-16-slim as builder
 #ARG VERSION=${VERSION}
 #WORKDIR /usr/src/app
-RUN curl https://storage.yandexcloud.net/cloud-certs/CA.pem -o YandexInternalRootCA.crt
+#RUN curl https://storage.yandexcloud.net/cloud-certs/CA.pem -o YandexInternalRootCA.crt
 
 FROM openjdk:16-jdk-alpine
 ARG VERSION=${VERSION}
 WORKDIR /app
-RUN curl https://storage.yandexcloud.net/cloud-certs/CA.pem -o YandexInternalRootCA.crt
-COPY --from=builder /usr/src/app/YandexInternalRootCA.crt .
+RUN curl https://storage.yandexcloud.net/cloud-certs/CA.pem -o /usr/src/app/YandexInternalRootCA.crt
+#COPY --from=builder /usr/src/app/YandexInternalRootCA.crt .
 RUN keytool -importcert -file YandexInternalRootCA.crt \
     -alias yandex -cacerts -storepass changeit -noprompt \
     && rm -rf YandexInternalRootCA.crt \
