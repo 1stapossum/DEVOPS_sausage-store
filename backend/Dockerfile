@@ -20,6 +20,7 @@ RUN wget https://storage.yandexcloud.net/cloud-certs/CA.pem -o YandexInternalRoo
 #COPY --from=builder /usr/src/app/YandexInternalRootCA.crt .
 # подкидываем CA-сертификат Яндекса в хранилище сертификатов для Java
 # создаём пользователя jaruser
+
 RUN keytool -importcert -file YandexInternalRootCA.crt \
     -alias yandex -cacerts -storepass changeit -noprompt \
     && rm -rf YandexInternalRootCA.crt \
@@ -27,7 +28,7 @@ RUN keytool -importcert -file YandexInternalRootCA.crt \
     && adduser -S -s /bin/false -G jaruser jaruser -D -H \
     && apk add --no-cache dumb-init==1.2.5-r0
 
-ADD /builds/antinitrino/sausage-store/backend/target/sausage-store-${VERSION}.jar /app/sausage-storage.jar
+ADD /builds/antinitrino/sausage-store/backend/target/sausage-store-${VERSION}.jar ./sausage-storage.jar
 
 EXPOSE 8080
 # приложение будет запускаться под пользователем jaruser
