@@ -12,6 +12,7 @@ stages:
 - test
 - release
 - docker
+- deploy
 
 build-backend:
   stage: build
@@ -93,61 +94,57 @@ build-docker:
 
  ###
 
+upload-backend-latest:
+  variables:
+    GIT_STRATEGY: none
+  image: docker:20.10.12-dind-rootless
+  stage: release
+  before_script:
+    - until docker info; do sleep 1; done
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+   - echo "$CI_REGISTRY_IMAGE"
+   - echo "$CI_REGISTRY"
+   - docker pull $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
+    # если образ прошел проверки в CI (сканирование, тесты и т.д), то тегаем latest
+   - docker tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/sausage-backend:latest
+   - docker push $CI_REGISTRY_IMAGE/sausage-backend:latest
 
+deploy-backend:
+  stage: deploy
+  when: manual
+  image: alpine:3.15.0
+  # если хотим сделать деплой по кнопке
+   
+  before_script:
+    - apk add openssh-client bash
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
 
+  script:
+    - touch .env 
+    - env | grep ${MONGO_URI_WHOLE} > .env 
+    - env | grep ${PSQL_DB_PASSWORD} >> .env
+    - env | grep ${PSQL_HOST} >> .env
+    - env | grep ${PSQL_USER} >> .env
+    - env | grep ${PSQL_PORT} >> .env
+    - env | grep ${PSQL_DBNAME} >> .env
+    - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
 
-
-#upload-backend-latest:
-#  variables:
-#    GIT_STRATEGY: none
-#  image: docker:20.10.12-dind-rootless
-#  stage: release
-#  before_script:
-#    - until docker info; do sleep 1; done
-#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#  script:
-#   - echo "$CI_REGISTRY_IMAGE"
-#    - echo "$CI_REGISTRY"
-#    - docker pull $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
-#    # если образ прошел проверки в CI (сканирование, тесты и т.д), то тегаем latest
-#    - docker tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/sausage-backend:latest
-#    - docker push $CI_REGISTRY_IMAGE/sausage-backend:latest
-
-#deploy-backend:
-#  stage: deploy
-#  when: manual
-#  image: alpine:3.15.0
-#  # если хотим сделать деплой по кнопке
-#   
-#  before_script:
-#    - apk add openssh-client bash
-#    - eval $(ssh-agent -s)
-#    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-#    - mkdir -p ~/.ssh
-#    - chmod 700 ~/.ssh
-#    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-#    - chmod 644 ~/.ssh/known_hosts
-
-#  script:
-#    - touch .env 
-#    - env | grep ${MONGO_URI_WHOLE} > .env 
-#    - env | grep ${PSQL_DB_PASSWORD} >> .env
-#    - env | grep ${PSQL_HOST} >> .env
-#    - env | grep ${PSQL_USER} >> .env
-#    - env | grep ${PSQL_PORT} >> .env
-#    - env | grep ${PSQL_DBNAME} >> .env
-#    - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
-#
-#    - ssh ${DEV_USER}@${DEV_HOST}
-#      "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
-#       export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
-#       export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
-#       export "CI_REGISTRY=${CI_REGISTRY}";
-#       export "VERSION=${VERSION}";
-#       export "SPRING_DATASOURCE_URL=${PSQL_HOST}";
-#       export "SPRING_DATASOURCE_URL=${PSQL_PORT}";
-#       export "SPRING_DATASOURCE_URL=${PSQL_DBNAME}";
-#       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
-#       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
-#       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
-#      /bin/bash -s " < ./backend/backend_deploy.sh
+    - ssh ${DEV_USER}@${DEV_HOST}
+      "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
+       export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
+       export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
+       export "CI_REGISTRY=${CI_REGISTRY}";
+       export "VERSION=${VERSION}";
+       export "SPRING_DATASOURCE_URL=${PSQL_HOST}";
+       export "SPRING_DATASOURCE_URL=${PSQL_PORT}";
+       export "SPRING_DATASOURCE_URL=${PSQL_DBNAME}";
+       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
+       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
+       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
+      /bin/bash -s " < ./backend/backend_deploy.sh
