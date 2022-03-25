@@ -19,9 +19,11 @@ build-backend:
     - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
     - cd backend
     - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
+    - mkdir sausage-store-${VERSION}
+    - cp /builds/antinitrino/sausage-store/backend/target/sausage-store-${VERSION}.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
   artifacts:
     paths:
-    - /builds/antinitrino/sausage-store/backend/target/sausage-store-${VERSION}.jar
+    - sausage-store-${VERSION}/sausage-store-${VERSION}.jar
     - ${MAVEN_REPO_PATH}
     reports:
       dotenv: CI_JOB_ID.TXT
