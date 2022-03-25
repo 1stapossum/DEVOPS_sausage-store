@@ -28,7 +28,7 @@ RUN keytool -importcert -file YandexInternalRootCA.crt \
     && adduser -S -s /bin/false -G jaruser jaruser -D -H \
     && apk add --no-cache dumb-init==1.2.5-r0
 
-ADD /builds/antinitrino/sausage-store/backend/target/sausage-store-${VERSION}.jar ./sausage-storage.jar
+ADD sausage-store-${VERSION}.jar sausage-storage.jar
 
 EXPOSE 8080
 # приложение будет запускаться под пользователем jaruser
