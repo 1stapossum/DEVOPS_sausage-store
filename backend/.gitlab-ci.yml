@@ -20,10 +20,10 @@ build-backend:
     - cd backend
     - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
     - mkdir sausage-store-${VERSION}
-    - cp target/sausage-store-${VERSION}.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
+    #- cp target/sausage-store-${VERSION}.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
   artifacts:
     paths:
-    - sausage-store-${VERSION}/sausage-store-${VERSION}.jar
+    - target/sausage-store-${VERSION}.jar
     - ${MAVEN_REPO_PATH}
     reports:
       dotenv: CI_JOB_ID.TXT
