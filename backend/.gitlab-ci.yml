@@ -20,8 +20,10 @@ build-backend:
     - cd backend
     - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
     - mkdir sausage-store-${VERSION}
+    - pwd
     - ls target
     - mv target/sausage-store-${VERSION}.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
+    - pwd
     - ls sausage-store-${VERSION}
   artifacts:
     paths:
