@@ -69,6 +69,8 @@ build-backend:
 
 build-docker:
   stage: docker
+  dependencies:
+    - build
   image: docker:20.10.12-dind-rootless
   before_script:
     - until docker info; do sleep 1; done
@@ -82,8 +84,7 @@ build-docker:
       --tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
       .
     - docker push $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
-  dependencies:
-    - build
+
  ###
 
 
