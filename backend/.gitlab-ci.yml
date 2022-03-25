@@ -70,7 +70,7 @@ build-backend:
 build-docker:
   stage: docker
   dependencies:
-    - build
+    - build-backend:
   image: docker:20.10.12-dind-rootless
   before_script:
     - until docker info; do sleep 1; done
