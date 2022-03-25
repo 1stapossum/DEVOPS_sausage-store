@@ -20,7 +20,7 @@ build-backend:
     - cd backend
     - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
     - mkdir sausage-store-${VERSION}
-    - cp /builds/antinitrino/sausage-store/backend/target/sausage-store-${VERSION}.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
+    - cp target/sausage-store-${VERSION}.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
   artifacts:
     paths:
     - sausage-store-${VERSION}/sausage-store-${VERSION}.jar
