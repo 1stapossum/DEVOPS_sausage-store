@@ -9,9 +9,8 @@ variables:
 
 stages:
 - build
-- test
-- release
 - docker
+- release
 - deploy
 
 build-backend:
