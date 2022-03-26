@@ -9,6 +9,7 @@ variables:
 
 stages:
 - build
+- test
 - docker
 - release
 - deploy
@@ -41,22 +42,21 @@ build-backend:
 #  stage: test
 #include:
 #  - template: Security/SAST.gitlab-ci.yml
-#sonarq-backend-check:
-#  stage: test
 
-#  image: maven:3.8.3-openjdk-16
-
-#  variables:
-#    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-#    GIT_DEPTH: "0"
-#  script:
-#    - cd backend
-#    - mvn verify sonar:sonar
-#      -Dsonar.qualitygate.wait=true
-#      -Dsonar.projectKey=02_alexander_volokhov_backend
-#      -Dsonar.projectName=02_alexander_volokhov_backend
-#      -Dsonar.host.url=$SONAR_URL
-#      -Dsonar.login=$SONAR_TOKEN
+sonarq-backend-check:
+  stage: test
+  image: maven:3.8.3-openjdk-16
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
+  script:
+    - cd backend
+    - mvn verify sonar:sonar
+      -Dsonar.qualitygate.wait=true
+      -Dsonar.projectKey=02_alexander_volokhov_backend
+      -Dsonar.projectName=02_alexander_volokhov_backend
+      -Dsonar.host.url=$SONAR_URL
+      -Dsonar.login=$SONAR_TOKEN
 
 #upload-release-to-GIT:
 #  stage: release
