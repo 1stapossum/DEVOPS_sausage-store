@@ -24,7 +24,7 @@ build-frontend:
   #- touch sausage-store-${VERSION}/public_html/test3.txt # Тест роллбэка. Работает. Роллбэк всмысле.
   artifacts:
     paths:
-    - sausage-store-front-${VERSION}/public_html
+    - ${CI_PROJECT_DIR}/sausage-store-front-${VERSION}/public_html
 
 #  rules:
 #      - changes:
