@@ -14,6 +14,7 @@ docker pull ${CI_REGISTRY_IMAGE}/sausage-frontend:latest
 docker stop sausage-frontend || true
 docker rm sausage-frontend || true
 set -e
-docker run -d --name sausage-bacfrontend --network=sausage_network --pull always --restart always --env-file .env ${CI_REGISTRY_IMAGE}/sausage-frontend:latest
+#docker run -d --name sausage-bacfrontend --network=sausage_network --pull always --restart always --env-file .env ${CI_REGISTRY_IMAGE}/sausage-frontend:latest
+docker run -d --name sausage-frontend --network=sausage_network --pull always --restart always  ${CI_REGISTRY_IMAGE}/sausage-frontend:latest
 
     #--pull always
