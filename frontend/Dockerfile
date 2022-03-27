@@ -1,5 +1,6 @@
 #FROM node:14.17.3
 FROM node:16.9.1
+ARG VERSION=${VERSION}
 # Create app directory
 WORKDIR /usr/src/app
 COPY sausage-store-front-${VERSION}/public_html .
