@@ -15,16 +15,16 @@ build-frontend:
   - npm install
   - npm run build
   - cd ..
-  - mkdir sausage-store-${VERSION}
-  - mv frontend/dist/frontend sausage-store-${VERSION}/public_html
+  - mkdir sausage-store-front-${VERSION}
+  - mv frontend/dist/frontend sausage-store-front-${VERSION}/public_html
   #- touch sausage-store-${VERSION}/public_html/test3.txt # Тест роллбэка. Работает. Роллбэк всмысле.
   artifacts:
     paths:
-    - sausage-store-${VERSION}/public_html
+    - sausage-store-front-${VERSION}/public_html
 
-  rules:
-      - changes:
-           - frontend/*
+#  rules:
+#      - changes:
+#           - frontend/*
 
 
 #sonarq-frontend-check:
