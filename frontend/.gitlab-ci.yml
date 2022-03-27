@@ -21,7 +21,7 @@ build-frontend:
   #- cd ..
   - mkdir sausage-store-front-${VERSION}
   - ls sausage-store-front-${VERSION}
-  - mv 16dist/frontend sausage-store-front-${VERSION}/public_html
+  - mv dist/frontend sausage-store-front-${VERSION}/public_html
   - ls sausage-store-front-${VERSION}
   - cd sausage-store-front-${VERSION}
   - pwd
