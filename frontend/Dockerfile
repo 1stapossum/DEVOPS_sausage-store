@@ -1,9 +1,10 @@
 #FROM node:14.17.3
 FROM node:16.9.1
 ARG VERSION=${VERSION}
+ARG CI_PROJECT_DIR=${CI_PROJECT_DIR}
 # Create app directory
 WORKDIR /usr/src/app
-COPY sausage-store-front-${VERSION}/public_html .
+COPY {CI_PROJECT_DIR}/sausage-store-front-${VERSION}/public_html .
 #RUN npm install
 #RUN npm install -g http-server
 #RUN npm run build
