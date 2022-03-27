@@ -18,7 +18,7 @@ build-frontend:
   - cd frontend
   - npm install
   - npm run build
-  - cd ..
+  #- cd ..
   - mkdir sausage-store-front-${VERSION}
   - ls sausage-store-front-${VERSION}
   - mv frontend/dist/frontend sausage-store-front-${VERSION}/public_html
@@ -28,7 +28,7 @@ build-frontend:
   #- touch sausage-store-${VERSION}/public_html/test3.txt # Тест роллбэка. Работает. Роллбэк всмысле.
   artifacts:
     paths:
-    - sausage-store-front-${VERSION}/public_html
+    - ${CI_PROJECT_DIR}/frontend/sausage-store-front-${VERSION}/public_html
 
 #  rules:
 #      - changes:
