@@ -25,6 +25,7 @@ build-frontend:
   - ls sausage-store-front-${VERSION}
   - cd sausage-store-front-${VERSION}
   - pwd
+  - ls {CI_PROJECT_DIR}/sausage-store-front-1.0.39625/public_html
   #- touch sausage-store-${VERSION}/public_html/test3.txt # Тест роллбэка. Работает. Роллбэк всмысле.
   artifacts:
     paths:
