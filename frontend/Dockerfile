@@ -9,4 +9,4 @@ COPY sausage-store-front-${VERSION}/public_html ./dist/frontend/public_html
 RUN npm install -g http-server
 #RUN npm run build
 EXPOSE 80
-ENTRYPOINT ["http-server", "dist/frontend/", "-p", "80:80", "--proxy", "http://sausage-backend:8080"]
+ENTRYPOINT ["http-server", "dist/frontend/public_html", "-p", "80", "--proxy", "http://sausage-backend:8080"]
