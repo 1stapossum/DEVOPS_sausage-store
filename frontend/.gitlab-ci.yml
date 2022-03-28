@@ -48,11 +48,11 @@ sonarq-frontend-check:
   script:
     - cd frontend
     - sonar-scanner
-      -Dsonar.qualitygate.wait=true
       -Dsonar.projectKey=02_alexander_volokhov_frontend
       -Dsonar.projectName=02_alexander_volokhov_frontend
       -Dsonar.host.url=$SONAR_URL
       -Dsonar.login=$SONAR_TOKEN
+#      -Dsonar.qualitygate.wait=true
 
 build-docker:
   stage: docker
