@@ -33,17 +33,17 @@ build-backend:
     reports:
       dotenv: CI_JOB_ID.TXT
   
-#spotbugs-sast:       
+spotbugs-sast:       
 #Отключены т.к. с ними лезет ошибка ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
 #При билде образа докера.  Ошибка появляется и исчезает без какой-либо закономеронсти...Ранним утром работало. потом само перестало..
-#  variables:
-#    COMPILE: "false"
-#    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
+  variables:
+    COMPILE: "false"
+    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
 
-#sast:
-#  stage: test
-#include:
-#  - template: Security/SAST.gitlab-ci.yml
+sast:
+  stage: test
+include:
+  - template: Security/SAST.gitlab-ci.yml
 
 sonarq-backend-check:
   stage: test
