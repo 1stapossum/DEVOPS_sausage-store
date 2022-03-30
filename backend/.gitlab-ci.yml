@@ -9,8 +9,8 @@ variables:
 
 stages:
 - build
-- docker
 - test
+- docker
 - release
 - deploy
 
@@ -33,17 +33,17 @@ build-backend:
     reports:
       dotenv: CI_JOB_ID.TXT
   
-spotbugs-sast:       
+#spotbugs-sast:       
 #Отключены т.к. с ними лезет ошибка ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
 #При билде образа докера.  Ошибка появляется и исчезает без какой-либо закономеронсти...Ранним утром работало. потом само перестало..
-  variables:
-    COMPILE: "false"
-    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
+#  variables:
+#    COMPILE: "false"
+#    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
 
-sast:
-  stage: test
-include:
-  - template: Security/SAST.gitlab-ci.yml
+#sast:
+#  stage: test
+#include:
+#  - template: Security/SAST.gitlab-ci.yml
 
 sonarq-backend-check:
   stage: test
@@ -60,22 +60,7 @@ sonarq-backend-check:
       -Dsonar.projectKey=02_alexander_volokhov_backend
       -Dsonar.projectName=02_alexander_volokhov_backend
       -Dsonar.host.url=$SONAR_URL
-      -Dsonar.login=$SONAR_TOKEN
-
-#upload-release-to-GIT:
-#  stage: release
-#  script:
-#  - echo "$MY_TOKEN"
-#  - echo "Get artifact from job ${ARTIFACT_JOB_ID}"
-#
-#  - 'curl --location --output sausage-store-${VERSION}.zip -H "PRIVATE-TOKEN:
-#    ${MY_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/jobs/${ARTIFACT_JOB_ID}/artifacts"'
-#
-#  - "curl -sSL -H \"JOB-TOKEN: ${CI_JOB_TOKEN}\" -T sausage-store-${VERSION}.zip
-#    \"${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/sausage-store/${CI_COMMIT_SHA}/\"
-#    \n"
-
-    
+      -Dsonar.login=$SONAR_TOKEN 
 
 build-docker:
   stage: docker
@@ -94,8 +79,6 @@ build-docker:
       --tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
       .
     - docker push $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
-
- ###
 
 upload-backend-latest:
   variables:
@@ -137,7 +120,6 @@ deploy-backend:
     - env | grep ${PSQL_PORT} >> .env
     - env | grep ${PSQL_DBNAME} >> .env
     - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
-
     - ssh ${DEV_USER}@${DEV_HOST}
       "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
        export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
