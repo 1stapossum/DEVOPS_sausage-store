@@ -9,8 +9,8 @@ variables:
 
 stages:
 - build
-- test
 - docker
+- test
 - release
 - deploy
 
