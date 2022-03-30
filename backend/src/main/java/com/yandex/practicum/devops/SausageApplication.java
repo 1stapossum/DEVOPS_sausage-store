@@ -25,7 +25,7 @@ public class SausageApplication {
             productService.save(new Product(4L, "Нюренбергская", 315.00, "https://res.cloudinary.com/sugrobov/image/upload/v1623323635/repos/sausages/3.jpg"));
             productService.save(new Product(5L, "Мюнхенская", 330.00, "https://res.cloudinary.com/sugrobov/image/upload/v1623323635/repos/sausages/2.jpg"));
             productService.save(new Product(6L, "Еврейская", 189.00, "https://res.cloudinary.com/sugrobov/image/upload/v1623323635/repos/sausages/1.jpg"));
-            productService.save(new Product(6L, "Американская", 100.01, "https://res.cloudinary.com/sugrobov/image/upload/v1623323635/repos/sausages/1.jpg"));
+            productService.save(new Product(6L, "Невкусная", 100.01, "https://res.cloudinary.com/sugrobov/image/upload/v1623323635/repos/sausages/1.jpg"));
         };
     }
 }
