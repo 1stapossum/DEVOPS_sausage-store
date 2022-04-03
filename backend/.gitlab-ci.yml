@@ -8,7 +8,7 @@ variables:
   # JAVA_OPTS: -XX:MaxRAMPercentage=90
 cache:
   paths:
-    - .m2/repository
+    - ${CI_PROJECT_DIR}/.m2/repository
 
 stages:
 - build
