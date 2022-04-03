@@ -119,6 +119,7 @@ deploy-backend:
     - env | grep ${PSQL_USER} >> .env
     - env | grep ${PSQL_PORT} >> .env
     - env | grep ${PSQL_DBNAME} >> .env
+    - env | grep ${VAULT_TOKEN} >> .env
     - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
     - ssh ${DEV_USER}@${DEV_HOST}
       "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
