@@ -36,7 +36,7 @@ build-backend-report:
       dotenv: CI_JOB_ID.TXT
   
 #spotbugs-sast:       
-#Отключены т.к. с ними лезет ошибка ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+#Отключены т.к. с ними лезет ошибка ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?1
 #При билде образа докера.  Ошибка появляется и исчезает без какой-либо закономеронсти...Ранним утром работало. потом само перестало...
 #  variables:
 #    COMPILE: "false"
