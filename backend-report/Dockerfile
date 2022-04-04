@@ -1,11 +1,11 @@
-FROM maven:3.8-openjdk-16 as builder
+#FROM maven:3.8-openjdk-16 as builder
 #Create build directory
-ARG VERSION
-WORKDIR /usr/src/app
-COPY . .
-RUN mvn package -DskipTests -Dversion.application=${VERSION}
+#ARG VERSION
+#WORKDIR /usr/src/app
+#COPY . .
+#RUN mvn package -DskipTests -Dversion.application=${VERSION}
 
-FROM openjdk:16
+FROM openjdk:16-jdk-alpine
 
 ARG VERSION
 #Create app directory

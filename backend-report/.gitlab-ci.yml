@@ -30,7 +30,7 @@ build-backend-report:
     #- ls sausage-store-${VERSION}
   artifacts:
     paths:
-    - ${CI_PROJECT_DIR}/backend-report/sausage-store-${VERSION}/sausage-store-report-${VERSION}.jar
+    - ${CI_PROJECT_DIR}/backend-report/sausage-store-report-${VERSION}/sausage-store-report-${VERSION}.jar
     - ${MAVEN_REPO_PATH}
     reports:
       dotenv: CI_JOB_ID.TXT
