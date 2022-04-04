@@ -21,7 +21,7 @@ build-backend-report:
   script:
     - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
     - cd backend-report
-    - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
+    - mvn package -DskipTests -Dversion.application=${VERSION}
     - mkdir backend-report-${VERSION}
     - pwd
     - ls target
