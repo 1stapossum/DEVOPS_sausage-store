@@ -1,0 +1,125 @@
+include:
+  - project: 'templates/ci'
+    file: 'DockerInDockerTemplate.yml'
+
+variables:
+  VERSION: 1.0.${CI_PIPELINE_ID}
+  MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
+  # JAVA_OPTS: -XX:MaxRAMPercentage=90
+cache:
+  paths:
+    - ${CI_PROJECT_DIR}/.m2/repository
+
+stages:
+- build
+#- test
+- docker
+- deploy
+
+build-backend-report:
+  stage: build
+  script:
+    - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
+    - cd backend-report
+    - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
+    - mkdir backend-report-${VERSION}
+    - pwd
+    - ls target
+    - mv target/sausage-store-report-${VERSION}.jar backend-report-${VERSION}/sausage-store-report-${VERSION}.jar
+    - pwd
+    #- ls sausage-store-${VERSION}
+  artifacts:
+    paths:
+    - ${CI_PROJECT_DIR}/backend-report/sausage-store-${VERSION}/sausage-store-report-${VERSION}.jar
+    - ${MAVEN_REPO_PATH}
+    reports:
+      dotenv: CI_JOB_ID.TXT
+  
+#spotbugs-sast:       
+#Отключены т.к. с ними лезет ошибка ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+#При билде образа докера.  Ошибка появляется и исчезает без какой-либо закономеронсти...Ранним утром работало. потом само перестало..
+#  variables:
+#    COMPILE: "false"
+#    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
+
+#sast:
+#  stage: test
+#include:
+#  - template: Security/SAST.gitlab-ci.yml
+
+sonarq-backend-check:
+  stage: test
+  dependencies:
+    - build-backend-report
+  image: maven:3.8.3-openjdk-16
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
+  script:
+    - cd backend
+    - mvn verify sonar:sonar
+      -Dsonar.qualitygate.wait=true
+      -Dsonar.projectKey=02_alexander_volokhov_backend
+      -Dsonar.projectName=02_alexander_volokhov_backend
+      -Dsonar.host.url=$SONAR_URL
+      -Dsonar.login=$SONAR_TOKEN 
+
+build-docker:
+  stage: docker
+  dependencies:
+    - build-backend-report
+  image: docker:20.10.12-dind-rootless
+  before_script:
+    - until docker info; do sleep 1; done
+    # переменные CI_REGISTRY_USER, CI_REGISTRY_PASSWORD, CI_REGISTRY генерятся Гитлабом, их задавать не надо!
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - cd backend
+    - >
+      docker build
+      --build-arg VERSION=$VERSION
+      --tag $CI_REGISTRY_IMAGE/backend-report:latest
+      .
+    #- docker push $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/backend-report:latest
+
+
+
+deploy-backend:
+  stage: deploy
+  when: manual
+  image: alpine:3.15.0
+  # если хотим сделать деплой по кнопке
+   
+  before_script:
+    - apk add openssh-client bash
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+  script:
+    - touch .env 
+    - env | grep ${MONGO_URI_WHOLE} > .env 
+    - env | grep ${PSQL_DB_PASSWORD} >> .env
+    - env | grep ${PSQL_HOST} >> .env
+    - env | grep ${PSQL_USER} >> .env
+    - env | grep ${PSQL_PORT} >> .env
+    - env | grep ${PSQL_DBNAME} >> .env
+    - env | grep ${VAULT_TOKEN} >> .env
+    - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
+    - ssh ${DEV_USER}@${DEV_HOST}
+      "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
+       export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
+       export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
+       export "CI_REGISTRY=${CI_REGISTRY}";
+       export "VERSION=${VERSION}";
+       export "SPRING_DATASOURCE_URL=${PSQL_HOST}";
+       export "SPRING_DATASOURCE_URL=${PSQL_PORT}";
+       export "SPRING_DATASOURCE_URL=${PSQL_DBNAME}";
+       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
+       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
+       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
+      /bin/bash -s " < ./backend/backend_deploy.sh
