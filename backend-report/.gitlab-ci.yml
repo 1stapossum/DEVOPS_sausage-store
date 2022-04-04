@@ -122,4 +122,4 @@ deploy-backend:
        export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
        export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
        export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
-      /bin/bash -s " < ./backend/backend_deploy.sh
+      /bin/bash -s " < ./backend-report/backend_rpt_deploy.sh
