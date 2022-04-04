@@ -37,7 +37,7 @@ build-backend-report:
   
 #spotbugs-sast:       
 #Отключены т.к. с ними лезет ошибка ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
-#При билде образа докера.  Ошибка появляется и исчезает без какой-либо закономеронсти...Ранним утром работало. потом само перестало..
+#При билде образа докера.  Ошибка появляется и исчезает без какой-либо закономеронсти...Ранним утром работало. потом само перестало...
 #  variables:
 #    COMPILE: "false"
 #    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
