@@ -13,7 +13,10 @@ WORKDIR /usr/src/app
 
 RUN wget https://storage.yandexcloud.net/cloud-certs/CA.pem -O YandexInternalRootCA.crt && \
     keytool -importcert -file YandexInternalRootCA.crt -alias yandex -cacerts -storepass changeit -noprompt && \
-    rm -f YandexInternalRootCA.crt
+    rm -f YandexInternalRootCA.crt  \
+    && addgroup --system jaruser \
+    && adduser -S -s /bin/false -G jaruser jaruser -D -H \
+    && apk add --no-cache dumb-init==1.2.5-r0
 
 #COPY --from=builder /usr/src/app/target/sausage-store-report-${VERSION}.jar sausage-store-report.jar
 COPY --chown=jaruser:jaruser backend-report-${VERSION}/sausage-store-report-${VERSION}.jar sausage-store-report.jar
