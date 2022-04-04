@@ -11,7 +11,7 @@ ARG VERSION
 #Create app directory
 WORKDIR /usr/src/app
 
-RUN curl https://storage.yandexcloud.net/cloud-certs/CA.pem -o YandexInternalRootCA.crt && \
+RUN wget https://storage.yandexcloud.net/cloud-certs/CA.pem -O YandexInternalRootCA.crt && \
     keytool -importcert -file YandexInternalRootCA.crt -alias yandex -cacerts -storepass changeit -noprompt && \
     rm -f YandexInternalRootCA.crt
 
