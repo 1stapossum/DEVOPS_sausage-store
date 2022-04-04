@@ -15,7 +15,8 @@ RUN curl https://storage.yandexcloud.net/cloud-certs/CA.pem -o YandexInternalRoo
     keytool -importcert -file YandexInternalRootCA.crt -alias yandex -cacerts -storepass changeit -noprompt && \
     rm -f YandexInternalRootCA.crt
 
-COPY --from=builder /usr/src/app/target/sausage-store-report-${VERSION}.jar sausage-store-report.jar
+#COPY --from=builder /usr/src/app/target/sausage-store-report-${VERSION}.jar sausage-store-report.jar
+COPY --chown=jaruser:jaruser backend-report-${VERSION}/sausage-store-report-${VERSION}.jar sausage-store-report.jar
 
 ENTRYPOINT ["java", "-jar", "./sausage-store-report.jar", "--service.port=8081"]
 EXPOSE 8081
