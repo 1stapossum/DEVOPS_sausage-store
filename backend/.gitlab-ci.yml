@@ -6,12 +6,15 @@ variables:
   VERSION: 1.0.${CI_PIPELINE_ID}
   MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
   # JAVA_OPTS: -XX:MaxRAMPercentage=90
+cache:
+  paths:
+    - ${CI_PROJECT_DIR}/.m2/repository
 
 stages:
 - build
 - test
 - docker
-- release
+#- release
 - deploy
 
 build-backend:
@@ -76,25 +79,12 @@ build-docker:
     - >
       docker build
       --build-arg VERSION=$VERSION
-      --tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
+      --tag $CI_REGISTRY_IMAGE/sausage-backend:latest
       .
-    - docker push $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
+    #- docker push $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/sausage-backend:latest
 
-upload-backend-latest:
-  variables:
-    GIT_STRATEGY: none
-  image: docker:20.10.12-dind-rootless
-  stage: release
-  before_script:
-    - until docker info; do sleep 1; done
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-   - echo "$CI_REGISTRY_IMAGE"
-   - echo "$CI_REGISTRY"
-   - docker pull $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
-    # если образ прошел проверки в CI (сканирование, тесты и т.д), то тегаем latest
-   - docker tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/sausage-backend:latest
-   - docker push $CI_REGISTRY_IMAGE/sausage-backend:latest
+
 
 deploy-backend:
   stage: deploy
@@ -119,6 +109,7 @@ deploy-backend:
     - env | grep ${PSQL_USER} >> .env
     - env | grep ${PSQL_PORT} >> .env
     - env | grep ${PSQL_DBNAME} >> .env
+    - env | grep ${VAULT_TOKEN} >> .env
     - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
     - ssh ${DEV_USER}@${DEV_HOST}
       "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";

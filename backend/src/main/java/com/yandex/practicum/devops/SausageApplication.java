@@ -20,7 +20,7 @@ public class SausageApplication {
     CommandLineRunner runner(ProductService productService) {
         return args -> {
             productService.save(new Product(1L, "Сливочная", 320.00, "https://storage.yandexcloud.net/aleander-volokhov/pics/6.jpg"));
-            productService.save(new Product(2L, "Особая", 179.00, "https://storage.yandexcloud.net/aleander-volokhov/pics/5.jpg"));
+            productService.save(new Product(2L, "Особая", 179.00, "https://storage.yandexcloud.net/aleander-volokhov/pics/777.jpg"));
             productService.save(new Product(3L, "Молочная", 225.00, "https://storage.yandexcloud.net/aleander-volokhov/pics/4.jpg"));
             productService.save(new Product(4L, "Нюренбергская", 315.00, "https://storage.yandexcloud.net/aleander-volokhov/pics/3.jpg"));
             productService.save(new Product(5L, "Мюнхенская", 330.00, "https://storage.yandexcloud.net/aleander-volokhov/pics/2.jpg"));
