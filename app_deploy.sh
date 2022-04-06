@@ -41,9 +41,9 @@ cat > ihatevault.sh << EOFF
 cat << EOF | docker exec -i vault ash
   sleep 10
   vault login ${VAULT_DEV_ROOT_TOKEN_ID}
-  vault kv put secret/sausage-store spring.datasource.username=${PSQL_USER} \
-  spring.datasource.password=${PSQL_DB_PASSWORD} \
-  spring.data.mongodb.uri=${MONGO_URI_WHOLE}
+  vault kv put secret/sausage-store spring.datasource.username=${SPRING_DATASOURCE_USERNAME} \
+  spring.datasource.password=${SPRING_DATASOURCE_PASSWORD} \
+  spring.data.mongodb.uri=${SPRING_DATA_MONGODB_URI}
 EOF
 EOFF
 
