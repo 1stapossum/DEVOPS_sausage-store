@@ -36,6 +36,7 @@ backend-report:
       - backend-report/**/* 
   
 sausage-store-deploy:
+  image: alpine:3.15.0
   stage: deploy
   when: manual
   script:

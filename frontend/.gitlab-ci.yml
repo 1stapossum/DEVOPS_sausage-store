@@ -88,30 +88,30 @@ upload-frontend-latest:
    - docker tag $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/sausage-frontend:latest
    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:latest
 
-deploy-frontend:
-  stage: deploy
-  when: manual
-  image: alpine:3.15.0
-  # если хотим сделать деплой по кнопке
-   
-  before_script:
-    - apk add openssh-client bash
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-
-  script:
-  #  - touch .env 
-  #  - env | grep ${MONGO_URI_WHOLE} > .env 
-  #  - env | grep ${PSQL_DB_PASSWORD} >> .env
-  #  - env | grep ${PSQL_HOST} >> .env
-  #  - env | grep ${PSQL_USER} >> .env
-  #  - env | grep ${PSQL_PORT} >> .env
-  #  - env | grep ${PSQL_DBNAME} >> .env
-  #  - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
+#deploy-frontend:
+#  stage: deploy
+#  when: manual
+#  image: alpine:3.15.0
+#  # если хотим сделать деплой по кнопке
+#   
+#  before_script:
+#    - apk add openssh-client bash
+#    - eval $(ssh-agent -s)
+#    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+#    - mkdir -p ~/.ssh
+#    - chmod 700 ~/.ssh
+#    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+#    - chmod 644 ~/.ssh/known_hosts
+#
+#  script:
+#  #  - touch .env 
+#  #  - env | grep ${MONGO_URI_WHOLE} > .env 
+#  #  - env | grep ${PSQL_DB_PASSWORD} >> .env
+#  #  - env | grep ${PSQL_HOST} >> .env
+#  #  - env | grep ${PSQL_USER} >> .env
+#  #  - env | grep ${PSQL_PORT} >> .env
+#  #  - env | grep ${PSQL_DBNAME} >> .env
+#  #  - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
 
     - ssh ${DEV_USER}@${DEV_HOST}
       "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
