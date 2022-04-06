@@ -7,23 +7,10 @@ docker pull ${CI_REGISTRY_IMAGE}/sausage-backend:latest
 docker pull ${CI_REGISTRY_IMAGE}/sausage-frontend:latest
 docker pull ${CI_REGISTRY_IMAGE}/backend-report:latest
 
-docker stop sausage-frontend || true
-docker rm sausage-frontend || true
-docker rmi sausage-frontend || true
 
-docker stop sausage-backend || true
-docker rm sausage-backend || true
-docker rmi sausage-backend || true
-
-docker stop backend-report || true
-docker rm backend-report || true
-docker rmi  backend-report true
-
-docker stop vault || true
-docker rm vault || true
-docker rmi vault ||true
-
-docker-compose up
+docker rm -vf $(docker ps -aq)
+sleep 5
+docker-compose up -d
 
 
 #cat <<EOF | docker exec -i vault ash
