@@ -3,6 +3,10 @@ set +e
 docker network create -d bridge sausage_network || true
 docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 
+docker pull ${CI_REGISTRY_IMAGE}/sausage-backend:latest
+docker pull ${CI_REGISTRY_IMAGE}/sausage-frontend:latest
+docker pull ${CI_REGISTRY_IMAGE}/backend-report:latest
+
 docker stop sausage-frontend || true
 docker rm sausage-frontend || true
 
@@ -15,6 +19,8 @@ docker rm backend-report || true
 docker stop vault || true
 docker rm vault || true
 
+
+docker create --cap-add=IPC_LOCK --name vault -p 8200:8200 -e 'VAULT_DEV_ROOT_TOKEN_ID=myroot' -e 'VAULT_SERVER=http://127.0.0.1:8200' -e 'VAULT_ADDR=http://127.0.0.1:8200' vault
 ##
 docker run -d --cap-add=IPC_LOCK --name vault -p 8200:8200 -e 'VAULT_DEV_ROOT_TOKEN_ID=myroot' -e 'VAULT_SERVER=http://127.0.0.1:8200' -e 'VAULT_ADDR=http://127.0.0.1:8200' vault
 
