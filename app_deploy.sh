@@ -20,9 +20,8 @@ docker rm backend-report || true
 docker rmi  || backend-report true
 
 
-docker stop vault || true
-docker rm vault || true
-docker rmi vault || true
+docker rm vault -f || true
+
 
 #docker create --cap-add=IPC_LOCK --name vault -p 8200:8200 -e 'VAULT_DEV_ROOT_TOKEN_ID=myroot' -e 'VAULT_SERVER=http://127.0.0.1:8200' -e 'VAULT_ADDR=http://127.0.0.1:8200' vault
 ##
@@ -32,7 +31,6 @@ docker run -d --cap-add=IPC_LOCK --name vault -p 8200:8200 -e 'VAULT_DEV_ROOT_TO
 cat <<EOF | docker exec -i vault ash
   sleep 10;
   vault login myroot
-  vault secrets enable -path=secret kv
   vault kv put secret/sausage-store spring.datasource.password=${PSQL_DB_PASSWORD} spring.datasource.username=${PSQL_USER} spring.data.mongodb.uri=${MONGO_URI_WHOLE}
 EOF
 
