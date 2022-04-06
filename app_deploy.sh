@@ -22,7 +22,7 @@ docker-compose up -d
 cat > ihatevault.sh << EOFF
 #!/usr/bin/bash
 cat << EOF | docker exec -i vault ash
-  sleep 10;
+  sleep 10
   vault login ${VAULT_DEV_ROOT_TOKEN_ID}
   vault kv put secret/sausage-store spring.datasource.username=${PSQL_USER} \
   spring.datasource.password=${PSQL_DB_PASSWORD} \
