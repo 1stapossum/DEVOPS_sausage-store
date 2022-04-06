@@ -23,7 +23,7 @@ docker stop vault || true
 docker rm vault || true
 docker rmi vault ||true
 
-docker-compose -d up
+docker-compose up
 
 
 #cat <<EOF | docker exec -i vault ash
