@@ -8,7 +8,7 @@ docker pull ${CI_REGISTRY_IMAGE}/sausage-frontend:latest
 docker pull ${CI_REGISTRY_IMAGE}/backend-report:latest
 
 
-docker rm -vf $(docker ps -aq)
+docker rm -vf "$(docker ps -aq)"
 sleep 5
 docker-compose up -d
 
@@ -19,20 +19,29 @@ docker-compose up -d
 #  vault kv put secret/sausage-store spring.datasource.password="PSQL_DB_PASSWORD" spring.datasource.username="PSQL_USER" spring.data.mongodb.uri="MONGO_URI_WHOLE"
 #EOF
 
-cat > ihatevault.sh << EOFF
-#!/usr/bin/bash
-cat << EOF | docker exec -i vault ash
-  sleep 10
-  vault login ${VAULT_DEV_ROOT_TOKEN_ID}
-  vault kv put secret/sausage-store spring.datasource.username=${PSQL_USER} \
-  spring.datasource.password=${PSQL_DB_PASSWORD} \
-  spring.data.mongodb.uri=${MONGO_URI_WHOLE}
-EOF
-EOFF
+#cat > ihatevault.sh << EOFF
+##!/usr/bin/bash
+#cat << EOF | docker exec -i vault ash
+#  sleep 10
+#  vault login ${VAULT_DEV_ROOT_TOKEN_ID}
+#  vault kv put secret/sausage-store spring.datasource.username=${PSQL_USER} \
+#  spring.datasource.password=${PSQL_DB_PASSWORD} \
+#  spring.data.mongodb.uri=${MONGO_URI_WHOLE}
+#EOF
+#EOFF
 
-chmod +x ihatevault.sh
-sleep 15
-bash ihatevault.sh
-sleep 5
-rm -f ihatevault.sh
+docker exec -i vault ash
+sleep 10
+vault login ${VAULT_DEV_ROOT_TOKEN_ID}
+vault kv put secret/sausage-store spring.datasource.username=${PSQL_USER} \ 
+spring.datasource.password=${PSQL_DB_PASSWORD}  \  
+spring.data.mongodb.uri=${MONGO_URI_WHOLE}
+
+
+
+#chmod +x ihatevault.sh
+#sleep 15
+#bash ihatevault.sh
+#sleep 5
+#rm -f ihatevault.sh
 
