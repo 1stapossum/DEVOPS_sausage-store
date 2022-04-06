@@ -48,6 +48,10 @@ sausage-store-deploy:
     - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
+    - echo ${CI_REGISTRY_IMAGE}
+    - echo ${CI_REGISTRY_USER}
+    - echo ${CI_REGISTRY_PASSWORD}
+    - echo ${CI_REGISTRY}
     - touch .env 
     - env | grep ${MONGO_URI_WHOLE} > .env 
     - env | grep ${PSQL_DB_PASSWORD} >> .env
