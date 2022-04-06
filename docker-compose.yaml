@@ -10,7 +10,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ${PSQL_USER}
       SPRING_DATASOURCE_URL: jdbc:postgresql://${PSQL_HOST}:${PSQL_PORT}/${PSQL_DBNAME}
       SPRING_FLYWAY_BASELINE-ON-MIGRATE: "true"
-      SPRING_CLOUD_VAULT_TOKEN: "myroot"
+      SPRING_CLOUD_VAULT_TOKEN: ${VAULT_TOKEN}
     networks:
       - sausage_network
   
@@ -21,7 +21,7 @@ services:
     container_name: backend-report
     restart: always
     environment:
-      SPRING_CLOUD_VAULT_TOKEN: "myroot"
+      SPRING_CLOUD_VAULT_TOKEN: ${VAULT_TOKEN}
     networks:
       - sausage_network
   
@@ -36,6 +36,8 @@ services:
       - sausage_network
   
   vault:
+    env_file:
+     - .env
     image: vault
     container_name: vault
     ports:
