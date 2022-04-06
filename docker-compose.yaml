@@ -1,0 +1,50 @@
+version: "3.3"
+services:
+  backend:
+    env_file:
+     - .env
+    image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-backend:latest
+    container_name: sausage-backend
+    environment:
+      SPRING_DATASOURCE_USERNAME: ${PSQL_USER}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${PSQL_HOST}:${PSQL_PORT}/${PSQL_DBNAME}
+      SPRING_FLYWAY_BASELINE-ON-MIGRATE: "true"
+      SPRING_CLOUD_VAULT_TOKEN: "myroot"
+    networks:
+      - sausage_network
+  
+  backend-report:
+    env_file:
+     - .env
+    image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/backend-report:latest
+    container_name: backend-report
+    environment:
+      SPRING_CLOUD_VAULT_TOKEN: "myroot"
+    networks:
+      - sausage_network
+  
+  frontend:
+    env_file:
+     - .env
+    image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-frontend:latest
+    container_name: sausage-frontend
+    ports:
+      - "80:80"
+    networks:
+      - sausage_network
+  
+  #vault:
+  #  env_file:
+  #   - variables.env
+  #  image: vault
+  #  container_name: vault
+  #  environment:
+  #    VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_DEV_ROOT_TOKEN_ID}
+  #    VAULT_SERVER: "http://127.0.0.1:8200"
+  #    VAULT_ADDR: "http://127.0.0.1:8200"
+  #  networks:
+  #    - sausage-store
+
+networks:
+  sausage_network:
+    external: true

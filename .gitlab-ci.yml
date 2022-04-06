@@ -35,6 +35,35 @@ backend-report:
     changes:  #как только происходит изменение в папке backend, запускается дочерний пайплайн, который лежит в этой папке!!
       - backend-report/**/* 
   
+sausage-store-deploy:
+  stage: deploy
+  when: manual
+  script:
+    - touch .env 
+    - env | grep ${MONGO_URI_WHOLE} > .env 
+    - env | grep ${PSQL_DB_PASSWORD} >> .env
+    - env | grep ${PSQL_HOST} >> .env
+    - env | grep ${PSQL_USER} >> .env
+    - env | grep ${PSQL_PORT} >> .env
+    - env | grep ${PSQL_DBNAME} >> .env
+    - env | grep ${VAULT_TOKEN} >> .env
+    - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
+    - scp docker-compose.yaml ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/docker-compose.yaml
+    - ssh ${DEV_USER}@${DEV_HOST}
+      "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
+       export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
+       export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
+       export "CI_REGISTRY=${CI_REGISTRY}";
+       export "VERSION=${VERSION}";
+       export "SPRING_DATASOURCE_URL=${PSQL_HOST}";
+       export "SPRING_DATASOURCE_URL=${PSQL_PORT}";
+       export "SPRING_DATASOURCE_URL=${PSQL_DBNAME}";
+       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
+       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
+       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
+      /bin/bash -s " < ./app_deploy.sh
+
+    
 
 
 
