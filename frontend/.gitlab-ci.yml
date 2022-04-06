@@ -112,21 +112,21 @@ upload-frontend-latest:
 #  #  - env | grep ${PSQL_PORT} >> .env
 #  #  - env | grep ${PSQL_DBNAME} >> .env
 #  #  - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
-
-    - ssh ${DEV_USER}@${DEV_HOST}
-      "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
-       export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
-       export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
-       export "CI_REGISTRY=${CI_REGISTRY}";
-       export "VERSION=${VERSION}";
-       export "SPRING_DATASOURCE_URL=${PSQL_HOST}";
-       export "SPRING_DATASOURCE_URL=${PSQL_PORT}";
-       export "SPRING_DATASOURCE_URL=${PSQL_DBNAME}";
-       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
-       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
-       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
-       export "CI_PROJECT_DIR=${CI_PROJECT_DIR}";
-      /bin/bash -s " < ./frontend/frontend_deploy.sh
+#
+#    - ssh ${DEV_USER}@${DEV_HOST}
+#      "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
+#       export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
+#       export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
+#       export "CI_REGISTRY=${CI_REGISTRY}";
+#       export "VERSION=${VERSION}";
+#       export "SPRING_DATASOURCE_URL=${PSQL_HOST}";
+#       export "SPRING_DATASOURCE_URL=${PSQL_PORT}";
+#       export "SPRING_DATASOURCE_URL=${PSQL_DBNAME}";
+#       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
+#       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
+#       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
+#       export "CI_PROJECT_DIR=${CI_PROJECT_DIR}";
+#      /bin/bash -s " < ./frontend/frontend_deploy.sh
 
 
 
