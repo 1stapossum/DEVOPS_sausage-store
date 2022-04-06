@@ -50,9 +50,9 @@ EOFF
 #docker exec -i vault ash
 #sleep 10
 #vault login ${VAULT_DEV_ROOT_TOKEN_ID}
-#vault kv put secret/sausage-store spring.datasource.username=${PSQL_USER} 
-#vault kv put secret/spring.datasource.password=${PSQL_DB_PASSWORD}  
-#vault kv put secret/spring.data.mongodb.uri=${MONGO_URI_WHOLE}
+#vault kv put secret/sausage-store spring.datasource.username=${SPRING_DATASOURCE_USERNAME} 
+#vault kv put secret/spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}  
+#vault kv put secret/spring.data.mongodb.uri=${SPRING_DATA_MONGODB_URI}
 #exit
 
 
