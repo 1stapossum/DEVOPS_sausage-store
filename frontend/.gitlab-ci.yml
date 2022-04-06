@@ -68,7 +68,7 @@ build-docker:
     - >
       docker build
       --build-arg VERSION=$VERSION
-      --tag $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA
+      --tag $CI_REGISTRY_IMAGE/sausage-frontend:latest
       .
 #    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE/sausage-frontend:latest

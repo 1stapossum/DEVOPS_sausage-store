@@ -17,4 +17,4 @@ set -e
 #docker run -d --name sausage-bacfrontend --network=sausage_network --pull always --restart always --env-file .env ${CI_REGISTRY_IMAGE}/sausage-frontend:latest
 docker run -d --name sausage-frontend --network=sausage_network --pull always --restart always  -p 80:80 ${CI_REGISTRY_IMAGE}/sausage-frontend:latest
 
-    #--pull always!!
+    #--pull always!
