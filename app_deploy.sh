@@ -14,7 +14,7 @@ docker rmi sausage-backend || true
 
 docker stop backend-report || true
 docker rm backend-report || true
-docker rmi  backend-report true
+docker rmi  backend-report || true
 
 docker stop vault || true
 docker rm vault || true
