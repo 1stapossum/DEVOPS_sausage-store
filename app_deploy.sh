@@ -18,7 +18,7 @@ docker rmi  backend-report true
 
 docker stop vault || true
 docker rm vault || true
-docker rmi vault ||true
+docker rmi vault || true
 
 
 docker pull ${CI_REGISTRY_IMAGE}/sausage-backend:latest
