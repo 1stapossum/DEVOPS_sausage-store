@@ -14,31 +14,30 @@ stages:
 - build
 - test
 - docker
-#- release
 - deploy
 
-build-backend:
+build-backend-report:
   stage: build
   script:
     - echo "ARTIFACT_JOB_ID=${CI_JOB_ID}" > CI_JOB_ID.TXT
-    - cd backend
-    - mvn package -Dversion.application=${VERSION} -Dmaven.repo.local=${MAVEN_REPO_PATH}
-    - mkdir sausage-store-${VERSION}
+    - cd backend-report
+    - mvn package -DskipTests -Dversion.application=${VERSION}
+    - mkdir backend-report-${VERSION}
     - pwd
     - ls target
-    - mv target/sausage-store-${VERSION}.jar sausage-store-${VERSION}/sausage-store-${VERSION}.jar
+    - mv target/sausage-store-report-${VERSION}.jar backend-report-${VERSION}/sausage-store-report-${VERSION}.jar
     - pwd
-    - ls sausage-store-${VERSION}
+    - ls backend-report-${VERSION}
   artifacts:
     paths:
-    - ${CI_PROJECT_DIR}/backend/sausage-store-${VERSION}/sausage-store-${VERSION}.jar
+    - ${CI_PROJECT_DIR}/backend-report/backend-report-${VERSION}/sausage-store-report-${VERSION}.jar
     - ${MAVEN_REPO_PATH}
     reports:
       dotenv: CI_JOB_ID.TXT
   
 #spotbugs-sast:       
-#Отключены т.к. с ними лезет ошибка ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
-#При билде образа докера.  Ошибка появляется и исчезает без какой-либо закономеронсти...Ранним утром работало. потом само перестало..
+#Отключены т.к. с ними лезет ошибка ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?1
+#При билде образа докера.  Ошибка появляется и исчезает без какой-либо закономеронсти...Ранним утром работало. потом само перестало...
 #  variables:
 #    COMPILE: "false"
 #    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
@@ -51,7 +50,7 @@ build-backend:
 sonarq-backend-check:
   stage: test
   dependencies:
-    - build-backend
+    - build-backend-report
   image: maven:3.8.3-openjdk-16
   variables:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
@@ -68,21 +67,21 @@ sonarq-backend-check:
 build-docker:
   stage: docker
   dependencies:
-    - build-backend
+    - build-backend-report
   image: docker:20.10.12-dind-rootless
   before_script:
     - until docker info; do sleep 1; done
     # переменные CI_REGISTRY_USER, CI_REGISTRY_PASSWORD, CI_REGISTRY генерятся Гитлабом, их задавать не надо!
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - cd backend
+    - cd backend-report
     - >
       docker build
       --build-arg VERSION=$VERSION
-      --tag $CI_REGISTRY_IMAGE/sausage-backend:${VERSION}
+      --tag $CI_REGISTRY_IMAGE/backend-report:${VERSION}
       .
     #- docker push $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE/sausage-backend:${VERSION}
+    - docker push $CI_REGISTRY_IMAGE/backend-report:${VERSION}
 
 
 
@@ -123,4 +122,4 @@ build-docker:
 #       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
 #       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
 #       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
-#      /bin/bash -s " < ./backend/backend_deploy.sh
+#      /bin/bash -s " < ./backend-report/backend_rpt_deploy.sh
