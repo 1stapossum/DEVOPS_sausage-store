@@ -21,9 +21,9 @@ docker rm vault || true
 docker rmi vault || true
 
 
-docker pull ${CI_REGISTRY_IMAGE}/sausage-backend:latest
-docker pull ${CI_REGISTRY_IMAGE}/sausage-frontend:latest
-docker pull ${CI_REGISTRY_IMAGE}/backend-report:latest
+docker pull ${CI_REGISTRY_IMAGE}/sausage-backend:${VERSION}
+docker pull ${CI_REGISTRY_IMAGE}/sausage-frontend:${VERSION}
+docker pull ${CI_REGISTRY_IMAGE}/backend-report:${VERSION}
 
 
 sleep 5

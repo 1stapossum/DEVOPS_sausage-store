@@ -3,7 +3,7 @@ services:
   backend:
     env_file:
      - .env
-    image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-backend:latest
+    image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-backend:${VERSION}
     container_name: sausage-backend
     restart: always
     environment:
@@ -17,7 +17,7 @@ services:
   backend-report:
     env_file:
      - .env
-    image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/backend-report:latest
+    image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/backend-report:${VERSION}
     container_name: backend-report
     restart: always
     environment:
@@ -28,7 +28,7 @@ services:
   frontend:
     env_file:
      - .env
-    image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-frontend:latest
+    image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-frontend:${VERSION}
     container_name: sausage-frontend
     ports:
       - "80:80"

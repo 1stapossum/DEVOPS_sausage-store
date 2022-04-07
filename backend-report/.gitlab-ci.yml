@@ -78,10 +78,10 @@ build-docker:
     - >
       docker build
       --build-arg VERSION=$VERSION
-      --tag $CI_REGISTRY_IMAGE/backend-report:latest
+      --tag $CI_REGISTRY_IMAGE/backend-report:${VERSION}
       .
     #- docker push $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE/backend-report:latest
+    - docker push $CI_REGISTRY_IMAGE/backend-report:${VERSION}
 
 
 
