@@ -16,4 +16,4 @@ docker rm sausage-backend || true
 set -e
 docker run -d --name sausage-backend --network=sausage_network --pull always --restart always --env-file .env ${CI_REGISTRY_IMAGE}/sausage-backend:${VERSION}
 
-    #--pull always !!!!
+    #--pull always !!!!!
