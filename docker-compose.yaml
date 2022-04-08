@@ -27,7 +27,7 @@ services:
     networks:
       - sausage_network
   
-  loadbalancer:
+  frontend:
     image: ${CI_REGISTRY_IMAGE}/sausage-frontend-nginx:${VERSION}
     ports:
       - "80:80"
