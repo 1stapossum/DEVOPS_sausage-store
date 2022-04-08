@@ -10,7 +10,3 @@ RUN npm install -g http-server
 #RUN npm run build
 EXPOSE 80
 ENTRYPOINT ["http-server", "dist/frontend/public_html", "-p", "80", "--proxy", "http://sausage-backend:8080"]
-
-FROM nginx
-COPY --from=sausage-frontend:${VERSION}  /usr/src/app/dist/frontend/public_html /etc/nginx/public_html
-
