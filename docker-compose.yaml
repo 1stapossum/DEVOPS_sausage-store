@@ -6,7 +6,6 @@ services:
     image: ${CI_REGISTRY_IMAGE}/sausage-backend:${VERSION}
     container_name: sausage-backend
     restart: always
-    scale: 3
     environment:
       SPRING_DATASOURCE_USERNAME: ${PSQL_USER}
       SPRING_DATASOURCE_URL: jdbc:postgresql://${PSQL_HOST}:${PSQL_PORT}/${PSQL_DBNAME}
