@@ -1,0 +1,28 @@
+variables:
+  VERSION: 1.0.${CI_PIPELINE_ID}
+
+include:
+  - project: 'templates/ci'
+    file: 'DockerInDockerTemplate.yml'
+      
+stages:
+  - docker
+
+build-docker-nginx:
+  stage: docker
+  dependencies:
+    - build-frontend
+  image: docker:20.10.12-dind-rootless
+  before_script:
+    - until docker info; do sleep 1; done
+    # переменные CI_REGISTRY_USER, CI_REGISTRY_PASSWORD, CI_REGISTRY генерятся Гитлабом, их задавать не надо!
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - cd frontend-nginx
+    - >
+      docker build
+      --build-arg VERSION=$VERSION
+      --tag $CI_REGISTRY_IMAGE/sausage-frontend-nginx:${VERSION}
+      .
+#    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/sausage-frontend-nginx:${VERSION}  
