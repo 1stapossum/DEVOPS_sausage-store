@@ -9,8 +9,8 @@ stages:
   - build
   - test
   - docker
-  - release
-  - deploy
+  - docker-nginx
+
 
 build-frontend:
   stage: build
@@ -74,7 +74,7 @@ build-docker:
     - docker push $CI_REGISTRY_IMAGE/sausage-frontend:${VERSION}
    
 build-docker-nginx:
-  stage: docker
+  stage: docker-nginx
   image: docker:20.10.12-dind-rootless
   before_script:
     - until docker info; do sleep 1; done
