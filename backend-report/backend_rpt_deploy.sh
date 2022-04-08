@@ -16,4 +16,4 @@ docker rm backend-report || true
 set -e
 docker run -d --name backend-report --network=sausage_network --pull always --restart always --env-file .env ${CI_REGISTRY_IMAGE}/backend-report:${VERSION}
 
-    #--pull always !!!
+    #--pull always !!!!
