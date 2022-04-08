@@ -11,6 +11,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://${PSQL_HOST}:${PSQL_PORT}/${PSQL_DBNAME}
       SPRING_FLYWAY_BASELINE-ON-MIGRATE: "true"
       SPRING_CLOUD_VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_DEV_ROOT_TOKEN_ID}
+      VIRTUAL_HOST: virt_backend
     networks:
       - sausage_network
   
@@ -25,15 +26,25 @@ services:
     networks:
       - sausage_network
   
-  frontend:
-    env_file:
-     - .env
-    image: ${CI_REGISTRY_IMAGE}/sausage-frontend:${VERSION}
-    container_name: sausage-frontend
+  loadbalancer:
+    image: ${CI_REGISTRY_IMAGE}/sausage-frontend-nginx:${VERSION}
     ports:
       - "80:80"
-    networks:
-      - sausage_network
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      - DEFAULT_HOST=virt_backend
+  
+  
+  #frontend:
+  #  env_file:
+  #   - .env
+  #  image: ${CI_REGISTRY_IMAGE}/sausage-frontend:${VERSION}
+  #  container_name: sausage-frontend
+  #  ports:
+  #    - "80:80"
+  #  networks:
+  #    - sausage_network
   
   vault:
     env_file:
