@@ -35,7 +35,7 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
-      - DEFAULT_HOST=virt_backend
+      DEFAULT_HOST: virt_backend
     networks:
       - sausage_network
   
