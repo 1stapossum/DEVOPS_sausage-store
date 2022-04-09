@@ -4,7 +4,7 @@ services:
     env_file:
      - .env
     image: ${CI_REGISTRY_IMAGE}/sausage-backend:${VERSION}
-    container_name: sausage-backend
+#    container_name: sausage-backend
     restart: always
     environment:
       SPRING_DATASOURCE_USERNAME: ${PSQL_USER}
