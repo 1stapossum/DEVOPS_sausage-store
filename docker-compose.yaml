@@ -11,7 +11,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://${PSQL_HOST}:${PSQL_PORT}/${PSQL_DBNAME}
       SPRING_FLYWAY_BASELINE-ON-MIGRATE: "true"
       SPRING_CLOUD_VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_DEV_ROOT_TOKEN_ID}
-      VIRTUAL_HOST: virt_backend
+      VIRTUAL_HOST: virtbackend
       
     networks:
       - sausage_network
@@ -35,7 +35,7 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
-      DEFAULT_HOST: virt_backend
+      DEFAULT_HOST: virtbackend
     networks:
       - sausage_network
   
