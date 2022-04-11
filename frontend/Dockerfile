@@ -14,7 +14,7 @@ ENTRYPOINT ["http-server", "dist/frontend/public_html", "-p", "80", "--proxy", "
 
 FROM nginxproxy/nginx-proxy as NEW
 ARG VERSION=${VERSION}
-COPY --from=OLD /usr/src/app/dist/frontend/public_html /usr/share/nginx/html/public_html
+COPY --from=OLD /usr/src/app/dist/frontend/public_html /usr/share/nginx/html/
 #COPY sausage-store-front-${VERSION}/public_html /usr/share/nginx/html/
 COPY proxytemplate /app
 #RUN docker-gen -only-exposed -watch -notify "/etc/init.d/nginx reload" /app/templ /etc/nginx/nginx.conf
