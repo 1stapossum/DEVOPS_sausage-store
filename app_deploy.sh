@@ -7,6 +7,7 @@ sleep 5
 docker-compose pull
 docker-compose up -d
 docker-compose up -d --scale backend=2
+docker exec -d  sausage-frontend docker-gen -only-exposed -watch -notify "/etc/init.d/nginx reload" /app/proxytemplate /etc/nginx/nginx.conf
 
 cat > ihatevault.sh << EOFF
 #!/usr/bin/bash
