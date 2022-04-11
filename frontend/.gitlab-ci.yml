@@ -86,8 +86,9 @@ build-docker-nginx:
       docker build
       --build-arg VERSION=$VERSION
       --tag $CI_REGISTRY_IMAGE/sausage-frontend-nginx:${VERSION}
-      --file Dockerfile.nginx
       .
+#      --file Dockerfile.nginx
+      
 #    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE/sausage-frontend-nginx:${VERSION}  
 
