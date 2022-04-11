@@ -3,5 +3,5 @@ ARG VERSION=${VERSION}
 #COPY --from=sausage-frontend:${VERSION} /usr/src/app/dist/frontend/public_html /etc/nginx/public_html
 COPY sausage-store-front-${VERSION}/public_html /usr/share/nginx/html/
 COPY proxytemplate /app
-RUN docker-gen -only-exposed -watch -notify "/etc/init.d/nginx reload" /app/templ /etc/nginx/nginx.conf
+#RUN docker-gen -only-exposed -watch -notify "/etc/init.d/nginx reload" /app/templ /etc/nginx/nginx.conf
 #COPY nginx.conf /etc/nginx/nginx.conf
