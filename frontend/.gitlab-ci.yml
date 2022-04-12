@@ -9,8 +9,8 @@ stages:
   - build
   - test
   - docker
-  - release
-  - deploy
+  - docker-nginx
+
 
 build-frontend:
   stage: build
@@ -72,76 +72,23 @@ build-docker:
       .
 #    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE/sausage-frontend:${VERSION}
+   
+build-docker-nginx:
+  stage: docker-nginx
+  image: docker:20.10.12-dind-rootless
+  before_script:
+    - until docker info; do sleep 1; done
+    # переменные CI_REGISTRY_USER, CI_REGISTRY_PASSWORD, CI_REGISTRY генерятся Гитлабом, их задавать не надо!
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - cd frontend
+    - >
+      docker build
+      --build-arg VERSION=$VERSION
+      --tag $CI_REGISTRY_IMAGE/sausage-frontend-nginx:${VERSION}
+      .
+#      --file Dockerfile.nginx
+      
+#    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/sausage-frontend-nginx:${VERSION}  
 
-
-#deploy-frontend:
-#  stage: deploy
-#  when: manual
-#  image: alpine:3.15.0
-#  # если хотим сделать деплой по кнопке
-#   
-#  before_script:
-#    - apk add openssh-client bash
-#    - eval $(ssh-agent -s)
-#    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-#    - mkdir -p ~/.ssh
-#    - chmod 700 ~/.ssh
-#    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-#    - chmod 644 ~/.ssh/known_hosts
-#
-#  script:
-#  #  - touch .env 
-#  #  - env | grep ${MONGO_URI_WHOLE} > .env 
-#  #  - env | grep ${PSQL_DB_PASSWORD} >> .env
-#  #  - env | grep ${PSQL_HOST} >> .env
-#  #  - env | grep ${PSQL_USER} >> .env
-#  #  - env | grep ${PSQL_PORT} >> .env
-#  #  - env | grep ${PSQL_DBNAME} >> .env
-#  #  - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
-#
-#    - ssh ${DEV_USER}@${DEV_HOST}
-#      "export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
-#       export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
-#       export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
-#       export "CI_REGISTRY=${CI_REGISTRY}";
-#       export "VERSION=${VERSION}";
-#       export "SPRING_DATASOURCE_URL=${PSQL_HOST}";
-#       export "SPRING_DATASOURCE_URL=${PSQL_PORT}";
-#       export "SPRING_DATASOURCE_URL=${PSQL_DBNAME}";
-#       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
-#       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
-#       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
-#       export "CI_PROJECT_DIR=${CI_PROJECT_DIR}";
-#      /bin/bash -s " < ./frontend/frontend_deploy.sh
-
-
-
-#upload-release:
-#  stage: release
-#  script:
-#  - tar czvf sausage-store-${VERSION}.tar.gz sausage-store-${VERSION}/public_html #!!!
-#  - curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}" --upload-file sausage-store-${VERSION}.tar.gz ${NEXUS_FRONTEND_REPO_URL}/sausage-store/${VERSION}/sausage-store-${VERSION}.tar.gz
-#
-#  rules:
-#      - changes:
-#           - frontend/*
-
-#deploy:
-#  stage: deploy
-#  when: manual
-#  before_script:
-#  #устанавливаем ssh-agent для удобства аутентификации по ssh
-#  - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-#  - eval $(ssh-agent -s)
-#  #сохраняем сгенеренный ранее приватный ключ для раннера
-#  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-#  - mkdir -p ~/.ssh
-#  - chmod 600 ~/.ssh
-#  - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-#  - chmod 644 ~/.ssh/known_hosts
-#  script:
-#    - scp ./frontend/sausage-store-front.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store-front.service
-#    - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "DEV_USER=${DEV_USER}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}"; export "NEXUS_FRONTEND_REPO_URL=${NEXUS_FRONTEND_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}"; setsid /bin/bash -s " < ./frontend/deploy.sh 
-#  environment:
-#    name: staging-frontend
-#    url: http://130.193.48.24/
