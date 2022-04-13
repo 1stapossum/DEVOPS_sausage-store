@@ -1,10 +1,32 @@
 version: "3.4"
 services:
-  backend:
+  backend-green:
     env_file:
      - .env
     image: ${CI_REGISTRY_IMAGE}/sausage-backend:${VERSION}
-#    container_name: sausage-backend
+    container_name: sausage-backend-green
+    restart: always
+    environment:
+      SPRING_DATASOURCE_USERNAME: ${PSQL_USER}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${PSQL_HOST}:${PSQL_PORT}/${PSQL_DBNAME}
+      SPRING_FLYWAY_BASELINE-ON-MIGRATE: "true"
+      SPRING_CLOUD_VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_DEV_ROOT_TOKEN_ID}
+      VIRTUAL_HOST: virtbackend
+    healthcheck:
+      test: curl --fail -s http://localhost:8080/actuator/health
+      interval: 30s
+      timeout: 10s
+      start_period: 20s
+      retries: 6 
+      
+    networks:
+      - sausage_network
+
+  backend-blue:
+    env_file:
+     - .env
+    image: ${CI_REGISTRY_IMAGE}/sausage-backend:${VERSION}
+    container_name: sausage-backend-blue
     restart: always
     environment:
       SPRING_DATASOURCE_USERNAME: ${PSQL_USER}
