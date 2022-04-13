@@ -4,7 +4,7 @@ services:
     env_file:
      - .env
     image: ${CI_REGISTRY_IMAGE}/sausage-backend:${VERSION}
-    container_name: sausage-backend-green
+    #container_name: sausage-backend-green
     restart: always
     environment:
       SPRING_DATASOURCE_USERNAME: ${PSQL_USER}
@@ -18,7 +18,7 @@ services:
       timeout: 10s
       start_period: 20s
       retries: 6 
-      
+     
     networks:
       - sausage_network
 
@@ -26,7 +26,7 @@ services:
     env_file:
      - .env
     image: ${CI_REGISTRY_IMAGE}/sausage-backend:${VERSION}
-    container_name: sausage-backend-blue
+    #container_name: sausage-backend-blue
     restart: always
     environment:
       SPRING_DATASOURCE_USERNAME: ${PSQL_USER}
