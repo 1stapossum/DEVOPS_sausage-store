@@ -5,7 +5,10 @@ docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 
 #sleep 5
 docker-compose pull
-docker-compose up -d
+#docker-compose up -d
+docker-compose up -d backend-report
+docker-compose up -d frontend
+docker-compose up -d vault
 cat > ihatevault.sh << EOFF
 #!/usr/bin/bash
 cat << EOF | docker exec -i vault ash
@@ -16,14 +19,20 @@ cat << EOF | docker exec -i vault ash
   spring.data.mongodb.uri=${SPRING_DATA_MONGODB_URI}
 EOF
 EOFF
-
 chmod +x ihatevault.sh
 sleep 15
 bash ihatevault.sh
-
 docker exec -d  sausage-frontend docker-gen -only-exposed -watch -notify "/etc/init.d/nginx reload" /app/proxytemplate /etc/nginx/nginx.conf
-
-
+#BACKEND RUN CHECK
+command1=$(docker inspect --format="{{.State.Running}}" $(docker ps  -q --filter="name=green"))
+command2=$(docker inspect --format="{{.State.Running}}" $(docker ps  -q --filter="name=blue"))
+#echo "$command1"
+#echo "$command2"
+if [[ $command1 == *"true"* ]] || [[ $command2 == *"true"* ]]; then
+echo "BACK is up"
+else
+docker-compose up -d backen-green
+fi
 
 ### BLUE/GREEN
 #source var
