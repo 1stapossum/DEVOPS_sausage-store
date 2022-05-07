@@ -12,20 +12,21 @@ docker-compose up -d vault
 cat > ihatevault.sh << EOFF
 #!/usr/bin/bash
 cat << EOF | docker exec -i vault ash
-    vault login ${VAULT_DEV_ROOT_TOKEN_ID}
+  vault login ${VAULT_DEV_ROOT_TOKEN_ID}
   vault kv put secret/sausage-store spring.datasource.username=${SPRING_DATASOURCE_USERNAME} \
   spring.datasource.password=${SPRING_DATASOURCE_PASSWORD} \
   spring.data.mongodb.uri=${SPRING_DATA_MONGODB_URI}
 EOF
 EOFF
 chmod +x ihatevault.sh
-vault_status=$(docker inspect -f {{.State.Running}} $(docker ps  -q --filter="name=vault"))
-until [ "$vault_status" == "true" ]
-do
-    sleep 0.1;
-vault_status=$(docker inspect -f {{.State.Running}} $(docker ps  -q --filter="name=vault"))
-        echo $vault_status;
-done
+#vault_status=$(docker inspect -f {{.State.Running}} $(docker ps  -q --filter="name=vault"))
+#until [ "$vault_status" == "true" ]
+#do
+#    sleep 0.1;
+#vault_status=$(docker inspect -f {{.State.Running}} $(docker ps  -q --filter="name=vault"))
+#        echo $vault_status;
+#done
+sleep 15
 bash ihatevault.sh
 
 
