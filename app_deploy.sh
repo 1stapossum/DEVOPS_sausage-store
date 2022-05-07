@@ -23,16 +23,18 @@ chmod +x ihatevault.sh
 sleep 15
 bash ihatevault.sh
 docker exec -d  sausage-frontend docker-gen -only-exposed -watch -notify "/etc/init.d/nginx reload" /app/proxytemplate /etc/nginx/nginx.conf
+
 #BACKEND RUN CHECK
-command1=$(docker inspect --format="{{.State.Running}}" $(docker ps -a -q --filter="name=green"))
-command2=$(docker inspect --format="{{.State.Running}}" $(docker ps -a -q --filter="name=blue"))
+command1=$(docker ps -aq  --filter status=running --filter="name=green")
+command2=$(docker ps -aq  --filter status=running --filter="name=blue")
 #echo "$command1"
 #echo "$command2"
-if [[ $command1 == "true" ]] || [[ $command2 == "true" ]]; then
+if [[ ! -z $command1 ]] || [[ ! -z $command2 ]]; then
 echo "BACK is up"
-else
-docker-compose up -d backen-green
+else 
+docker-compose up -d backend-blue
 fi
+
 
 ### BLUE/GREEN
 #source var
