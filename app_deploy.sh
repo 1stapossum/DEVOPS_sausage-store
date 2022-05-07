@@ -32,7 +32,8 @@ command2=$(docker ps -aq  --filter status=running --filter="name=blue")
 if [[ ! -z $command1 ]] || [[ ! -z $command2 ]]; then
 echo "BACK is up"
 else 
-docker-compose up -d backend-blue
+docker-compose up --scale backend-blue=2 -d
+exit 0
 fi
 
 
