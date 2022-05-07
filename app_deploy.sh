@@ -1,5 +1,5 @@
 #!/bin/bash
-set +e
+set -e
 docker network create -d bridge sausage_network || true
 docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 
@@ -12,16 +12,24 @@ docker-compose up -d vault
 cat > ihatevault.sh << EOFF
 #!/usr/bin/bash
 cat << EOF | docker exec -i vault ash
-  sleep 10
-  vault login ${VAULT_DEV_ROOT_TOKEN_ID}
+    vault login ${VAULT_DEV_ROOT_TOKEN_ID}
   vault kv put secret/sausage-store spring.datasource.username=${SPRING_DATASOURCE_USERNAME} \
   spring.datasource.password=${SPRING_DATASOURCE_PASSWORD} \
   spring.data.mongodb.uri=${SPRING_DATA_MONGODB_URI}
 EOF
 EOFF
 chmod +x ihatevault.sh
-sleep 15
+vault_status=$(docker inspect -f {{.State.Running}} $(docker ps  -q --filter="name=vault"))
+until [ "$vault_status" == "true" ]
+do
+    sleep 0.1;
+vault_status=$(docker inspect -f {{.State.Running}} $(docker ps  -q --filter="name=vault"))
+        echo $vault_status;
+done
 bash ihatevault.sh
+
+
+
 docker exec -d  sausage-frontend docker-gen -only-exposed -watch -notify "/etc/init.d/nginx reload" /app/proxytemplate /etc/nginx/nginx.conf
 
 #BACKEND RUN CHECK
@@ -32,6 +40,7 @@ command2=$(docker ps -aq  --filter status=running --filter="name=blue")
 if [[ ! -z $command1 ]] || [[ ! -z $command2 ]]; then
 echo "BACK is up"
 else 
+docker-compose 
 docker-compose up --scale backend-blue=2 -d
 exit 0
 fi
