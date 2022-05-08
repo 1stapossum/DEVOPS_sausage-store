@@ -4,10 +4,13 @@ docker network create -d bridge sausage_network || true
 docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 
 #sleep 5
-docker-compose pull
+#docker-compose pull
 #docker-compose up -d
+docker-compose pull backend-report
 docker-compose up -d backend-report
+docker-compose pull frontend
 docker-compose up -d frontend
+docker-compose pull vault
 docker-compose up -d vault
 cat > ihatevault.sh << EOFF
 #!/usr/bin/bash
@@ -38,7 +41,7 @@ command2=$(docker ps -aq  --filter status=running --filter="name=blue")
 #echo "$command2"
 if [[ -z $command1 ]] && [[ -z $command2 ]]; then
 echo "BACK is DOWN"
-docker-compose --scale backend-blue=2 -d
+docker-compose scale backend-blue=2
 exit 0
 else 
 echo "BACK is UP"
@@ -54,9 +57,9 @@ if [[ $CONTAINER_RUN_CHECK_ALL == *"blue"* ]]; then
   echo "Stoping green"
 docker-compose stop backend-green
 docker-compose rm -f backend-green 
-#docker-compose pull backend-green #budem schitat chto pull
+docker-compose pull backend-green #budem schitat chto pull
   echo "Starting Green"
-docker-compose up --scale backend-green=1 -d
+docker-compose scale backend-green=1 2> /dev/null
 command=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=green"))
 until [ "$command" == "healthy" ] 
 do
@@ -64,7 +67,7 @@ do
 command=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=green"))
 	echo $command;
 done
-docker-compose up --scale backend-green=2 -d
+docker-compose scale backend-green=2 2> /dev/null
   echo "Stoping blue!"
 #  docker stop $(docker ps  -q --filter="name=blue")a
 docker-compose stop backend-blue
@@ -75,9 +78,9 @@ elif [[ $CONTAINER_RUN_CHECK_ALL == *"green"* ]]; then
 #  docker stop $(docker ps  -q --filter="name=blue")
 docker-compose stop backend-blue
 docker-compose rm -f backend-blue
-#docker-compose pull backend-blue #budem schitat chto pull
+docker-compose pull backend-blue #budem schitat chto pull
   echo "Starting blue"
-docker-compose up --scale backend-blue=1 -d
+docker-compose scale backend-blue=1 2> /dev/null
 command=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=blue"))
 until [ "$command" == "healthy" ]
 do
@@ -85,7 +88,7 @@ do
 command=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=blue"))
         echo $command;
 done
-docker-compose --scale backend-blue=2 -d
+docker-compose scale backend-blue=2 2> /dev/null
   echo "Stoping green"
 docker-compose stop backend-green
 docker-compose rm -f backend-green
