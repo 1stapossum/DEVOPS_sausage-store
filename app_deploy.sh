@@ -1,4 +1,3 @@
-
 #!/bin/bash
 set -e
 docker network create -d bridge sausage_network || true
