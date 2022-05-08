@@ -46,21 +46,17 @@ fi
 
 
 ### BLUE/GREEN
-#source var
-#CONTAINER_RUN_CHECK=$(docker container  ls -q )
 CONTAINER_RUN_CHECK_ALL=$(docker container ls)				#All 
 CONTAINER_RUN_CHECK_BLUE=$(docker ps  -q --filter="name=blue")	#BLUE
 CONTAINER_RUN_CHECK_GREEN=$(docker ps  -q --filter="name=green")	#GREEN
-
 if [[ $CONTAINER_RUN_CHECK_ALL == *"blue"* ]]; then
   echo "Blue backend runing"
   echo "Stoping green"
 docker-compose stop backend-green
 docker-compose rm -f backend-green 
-docker-compose pull backend-green #budem schitat chto pull
+#docker-compose pull backend-green #budem schitat chto pull
   echo "Starting Green"
 docker-compose up --scale backend-green=1 -d
-
 command=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=green"))
 until [ "$command" == "healthy" ] 
 do
@@ -73,16 +69,14 @@ docker-compose up --scale backend-green=2 -d
 #  docker stop $(docker ps  -q --filter="name=blue")a
 docker-compose stop backend-blue
 docker-compose rm -f backend-blue
-
 elif [[ $CONTAINER_RUN_CHECK_ALL == *"green"* ]]; then
   echo "Green backend runing"
-
-echo "Stoping blue"
+  echo "Stoping blue"
 #  docker stop $(docker ps  -q --filter="name=blue")
 docker-compose stop backend-blue
 docker-compose rm -f backend-blue
-docker-compose pull backend-blue #budem schitat chto pull
-echo "Starting blue"
+#docker-compose pull backend-blue #budem schitat chto pull
+  echo "Starting blue"
 docker-compose up --scale backend-blue=1 -d
 command=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=blue"))
 until [ "$command" == "healthy" ]
@@ -91,8 +85,8 @@ do
 command=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=blue"))
         echo $command;
 done
- docker-compose up --scale backend-blue=2 -d
-echo "Stoping green"
+docker-compose up --scale backend-blue=2 -d
+  echo "Stoping green"
 docker-compose stop backend-green
 docker-compose rm -f backend-green
 fi
