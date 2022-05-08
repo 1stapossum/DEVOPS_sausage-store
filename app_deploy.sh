@@ -12,7 +12,7 @@ docker-compose up -d frontend
 docker-compose pull vault
 docker-compose up -d vault
 cat > ihatevault.sh << EOFF
-!/usr/bin/bash
+#!/usr/bin/bash
 cat << EOF | docker exec -i vault ash
   sleep 10
   vault login ${VAULT_DEV_ROOT_TOKEN_ID}
