@@ -38,7 +38,7 @@ command2=$(docker ps -aq  --filter status=running --filter="name=blue")
 #echo "$command2"
 if [[ -z $command1 ]] && [[ -z $command2 ]]; then
 echo "BACK is DOWN"
-docker-compose up --scale backend-blue=2 -d
+docker-compose --scale backend-blue=2 -d
 exit 0
 else 
 echo "BACK is UP"
@@ -85,7 +85,7 @@ do
 command=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=blue"))
         echo $command;
 done
-docker-compose up --scale backend-blue=2 -d
+docker-compose --scale backend-blue=2 -d
   echo "Stoping green"
 docker-compose stop backend-green
 docker-compose rm -f backend-green
