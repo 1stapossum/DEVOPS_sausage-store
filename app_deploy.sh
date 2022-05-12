@@ -59,7 +59,7 @@ docker-compose stop backend-green
 docker-compose rm -f backend-green 
 #docker-compose pull backend-green #budem schitat chto pull
   echo "Starting Green"
-docker-compose scale backend-green=1
+docker-compose up backend-green
 command_green=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=green"))
 until [ "$command_green" == "healthy" ] 
 do
@@ -79,7 +79,7 @@ docker-compose stop backend-blue
 docker-compose rm -f backend-blue
 #docker-compose pull backend-blue #budem schitat chto pull
   echo "Starting blue"
-docker-compose scale backend-blue=1 
+docker-compose up backend-blue
 command_blue=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=blue"))
 until [ "$command_blue" == "healthy" ]
 do
