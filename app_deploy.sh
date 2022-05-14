@@ -22,14 +22,14 @@ cat << EOF | docker exec -i vault ash
 EOF
 EOFF
 chmod +x ihatevault.sh
-#vault_status=$(docker inspect -f {{.State.Running}} $(docker ps  -q --filter="name=vault"))
-#until [ "$vault_status" == "true" ]
-#do
-#    sleep 0.1;
-#vault_status=$(docker inspect -f {{.State.Running}} $(docker ps  -q --filter="name=vault"))
-#        echo $vault_status;
-#done
-sleep 15
+vault_status=$(docker inspect -f {{.State.Running}} $(docker ps  -q --filter="name=vault"))
+until [ "$vault_status" == "true" ]
+do
+    sleep 1;
+vault_status=$(docker inspect -f {{.State.Running}} $(docker ps  -q --filter="name=vault"))
+        echo $vault_status;
+done
+#sleep 15
 bash ihatevault.sh
 docker exec -d  sausage-frontend docker-gen -only-exposed -watch -notify "/etc/init.d/nginx reload" /app/proxytemplate /etc/nginx/nginx.conf
 
