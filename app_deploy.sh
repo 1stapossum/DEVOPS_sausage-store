@@ -63,7 +63,7 @@ docker-compose up -d backend-green
 command_green=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=green"))
 until [ "$command_green" == "healthy" ] 
 do
-    sleep 0.1;
+    sleep 1;
 command_green=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=green"))
 	echo "Green is $command_green";
 done
@@ -83,7 +83,7 @@ docker-compose up -d backend-blue
 command_blue=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=blue"))
 until [ "$command_blue" == "healthy" ]
 do
-    sleep 0.1;
+    sleep 1;
 command_blue=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=blue"))
         echo "Blue is $command_blue";
 done
