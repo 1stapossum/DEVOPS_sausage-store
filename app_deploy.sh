@@ -57,9 +57,9 @@ if [[ $CONTAINER_RUN_CHECK_ALL == *"blue"* ]]; then
   echo "Stoping green"
 docker-compose stop backend-green
 docker-compose rm -f backend-green 
-#docker-compose pull backend-green #budem schitat chto pull
+docker-compose pull backend-green #budem schitat chto pull
   echo "Starting Green"
-docker-compose start backend-green
+docker-compose up -d backend-green
 command_green=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=green"))
 until [ "$command_green" == "healthy" ] 
 do
@@ -77,9 +77,9 @@ elif [[ $CONTAINER_RUN_CHECK_ALL == *"green"* ]]; then
   echo "Stoping blue"
 docker-compose stop backend-blue
 docker-compose rm -f backend-blue
-#docker-compose pull backend-blue #budem schitat chto pull
+docker-compose pull backend-blue #budem schitat chto pull
   echo "Starting blue"
-docker-compose start backend-blue
+docker-compose up -d backend-blue
 command_blue=$(docker inspect -f {{.State.Health.Status}} $(docker ps  -q --filter="name=blue"))
 until [ "$command_blue" == "healthy" ]
 do
