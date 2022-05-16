@@ -32,7 +32,7 @@ done
 bash ihatevault.sh
 docker exec -d sausage-frontend docker-gen -only-exposed -watch -notify "/etc/init.d/nginx reload" /app/proxytemplate /etc/nginx/nginx.conf
 
-#BACKEND RUN CHECK
+#BACKEND RUN CHECK.
 command1=$(docker ps -aq --filter status=running --filter="name=green")
 command2=$(docker ps -aq --filter status=running --filter="name=blue")
 #echo "$command1"
