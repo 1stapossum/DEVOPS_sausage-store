@@ -26,7 +26,7 @@ vault_status=$(docker inspect -f {{.State.Running}} $(docker ps -q --filter="nam
 until [ "$vault_status" == "true" ]; do
   sleep 1
   vault_status=$(docker inspect -f {{.State.Running}} $(docker ps -q --filter="name=vault"))
-  echo $vault_status
+  echo "Vault status is $vault_status"
 done
 #sleep 15
 bash ihatevault.sh
