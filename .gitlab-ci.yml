@@ -55,7 +55,7 @@ sausage-store-deploy:
     - echo ${CI_REGISTRY}
     - touch .env 
     - env | grep ${MONGO_URI_WHOLE} > .env 
-    - env | grep ${PSQL_DB_PASSWORD} >> .env
+#    - env | grep ${PSQL_DB_PASSWORD} >> .env
     - env | grep ${PSQL_HOST} >> .env
     - env | grep ${PSQL_USER} >> .env
     - env | grep ${PSQL_PORT} >> .env
