@@ -70,6 +70,8 @@ sausage-store-deploy:
        export "CI_REGISTRY=${CI_REGISTRY}";
        export "VERSION=${VERSION}";
        export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
+       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
+       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
        /bin/bash -s " < ./app_deploy.sh
 
     
