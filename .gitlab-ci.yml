@@ -53,14 +53,12 @@ sausage-store-deploy:
     - echo ${CI_REGISTRY_USER}
     - echo ${CI_REGISTRY_PASSWORD}
     - echo ${CI_REGISTRY}
-    - touch .env 
-    - env | grep ${MONGO_URI_WHOLE} > .env 
-    - env | grep ${PSQL_DB_PASSWORD} >> .env
-    - env | grep ${PSQL_HOST} >> .env
-    - env | grep ${PSQL_USER} >> .env
-    - env | grep ${PSQL_PORT} >> .env
-    - env | grep ${PSQL_DBNAME} >> .env
-    - env | grep ${VAULT_DEV_ROOT_TOKEN_ID} >> .env
+    - touch .env
+    - echo PSQL_HOST=${PSQL_HOST} >> .env
+    - echo PSQL_USER=${PSQL_USER} >> .env
+    - echo PSQL_PORT=${PSQL_PORT} >> .env
+    - echo PSQL_DBNAME=${PSQL_DBNAME} >> .env
+    - echo VAULT_DEV_ROOT_TOKEN_ID=${VAULT_DEV_ROOT_TOKEN_ID} >> .env
     - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
     - scp docker-compose.yaml ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/docker-compose.yaml
     - ssh ${DEV_USER}@${DEV_HOST}
@@ -70,13 +68,10 @@ sausage-store-deploy:
        export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
        export "CI_REGISTRY=${CI_REGISTRY}";
        export "VERSION=${VERSION}";
-       export "SPRING_DATASOURCE_URL=${PSQL_HOST}";
-       export "SPRING_DATASOURCE_URL=${PSQL_PORT}";
-       export "SPRING_DATASOURCE_URL=${PSQL_DBNAME}";
        export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
        export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
        export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
-      /bin/bash -s " < ./app_deploy.sh
+       /bin/bash -s " < ./app_deploy.sh
 
     
 

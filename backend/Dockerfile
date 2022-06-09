@@ -16,6 +16,7 @@
 FROM openjdk:16-jdk-alpine
 ARG VERSION=${VERSION}
 WORKDIR /app
+RUN apk --no-cache add curl
 RUN wget https://storage.yandexcloud.net/cloud-certs/CA.pem -O YandexInternalRootCA.crt
 #COPY --from=builder /usr/src/app/YandexInternalRootCA.crt .
 # подкидываем CA-сертификат Яндекса в хранилище сертификатов для Java
