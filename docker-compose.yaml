@@ -7,7 +7,7 @@ services:
     #container_name: sausage-backend-green
     restart: always
     environment:
-      SPRING_DATASOURCE_USERNAME: ${PSQL_USER}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_URL: jdbc:postgresql://${PSQL_HOST}:${PSQL_PORT}/${PSQL_DBNAME}
       SPRING_FLYWAY_BASELINE-ON-MIGRATE: "true"
       SPRING_CLOUD_VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_DEV_ROOT_TOKEN_ID}
@@ -29,7 +29,7 @@ services:
     #container_name: sausage-backend-blue
     restart: always
     environment:
-      SPRING_DATASOURCE_USERNAME: ${PSQL_USER}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_URL: jdbc:postgresql://${PSQL_HOST}:${PSQL_PORT}/${PSQL_DBNAME}
       SPRING_FLYWAY_BASELINE-ON-MIGRATE: "true"
       SPRING_CLOUD_VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_DEV_ROOT_TOKEN_ID}

@@ -55,7 +55,7 @@ sausage-store-deploy:
     - echo ${CI_REGISTRY}
     - touch .env
     - echo PSQL_HOST=${PSQL_HOST} >> .env
-    - echo PSQL_USER=${PSQL_USER} >> .env
+    - echo SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME} >> .env
     - echo PSQL_PORT=${PSQL_PORT} >> .env
     - echo PSQL_DBNAME=${PSQL_DBNAME} >> .env
     - echo VAULT_DEV_ROOT_TOKEN_ID=${VAULT_DEV_ROOT_TOKEN_ID} >> .env
@@ -68,9 +68,9 @@ sausage-store-deploy:
        export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
        export "CI_REGISTRY=${CI_REGISTRY}";
        export "VERSION=${VERSION}";
-       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
-       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
-       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
+       export "SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}";
+       export "SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}";
+       export "SPRING_DATA_MONGODB_URI=${SPRING_DATA_MONGODB_URI}";
        /bin/bash -s " < ./app_deploy.sh
 
     
