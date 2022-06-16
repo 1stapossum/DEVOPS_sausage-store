@@ -3,7 +3,7 @@ variables:
 
 stages:
   - module-pipelines
-  - deploy
+ # - deploy
 
 frontend:
   stage: module-pipelines
