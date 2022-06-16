@@ -8,27 +8,23 @@ include:
 stages:
   - build
   - test
-  - docker
-  - docker-nginx
-
 
 build-frontend:
   stage: build
+  image: docker:20.10.12-dind-rootless
+  before_script:
+    - until docker info; do sleep 1; done
+    # переменные CI_REGISTRY_USER, CI_REGISTRY_PASSWORD, CI_REGISTRY генерятся Гитлабом, их задавать не надо!
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-  - cd frontend
-  - npm install
-  - npm run build
-  #- cd ..
-  - mkdir sausage-store-front-${VERSION}
-  - ls sausage-store-front-${VERSION}
-  - mv dist/frontend sausage-store-front-${VERSION}/public_html
-  - ls sausage-store-front-${VERSION}
-  - cd sausage-store-front-${VERSION}
-  - pwd
-  #- touch sausage-store-${VERSION}/public_html/test3.txt # Тест роллбэка. Работает. Роллбэк всмысле.
-  artifacts:
-    paths:
-    - ${CI_PROJECT_DIR}/frontend/sausage-store-front-${VERSION}/public_html
+    - cd frontend
+    - >
+      docker build
+      --build-arg VERSION=$VERSION
+      --tag $CI_REGISTRY_IMAGE/sausage-frontend:${VERSION}
+      .
+#    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:${VERSION}
 
 #  rules:
 #      - changes:
@@ -54,40 +50,7 @@ sonarq-frontend-check:
       -Dsonar.login=$SONAR_TOKEN
 #      -Dsonar.qualitygate.wait=true
 
-build-docker:
-  stage: docker
-  dependencies:
-    - build-frontend
-  image: docker:20.10.12-dind-rootless
-  before_script:
-    - until docker info; do sleep 1; done
-    # переменные CI_REGISTRY_USER, CI_REGISTRY_PASSWORD, CI_REGISTRY генерятся Гитлабом, их задавать не надо!
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - cd frontend
-    - >
-      docker build
-      --build-arg VERSION=$VERSION
-      --tag $CI_REGISTRY_IMAGE/sausage-frontend:${VERSION}
-      .
-#    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:${VERSION}
+
    
-build-docker-nginx:
-  stage: docker-nginx
-  image: docker:20.10.12-dind-rootless
-  before_script:
-    - until docker info; do sleep 1; done
-    # переменные CI_REGISTRY_USER, CI_REGISTRY_PASSWORD, CI_REGISTRY генерятся Гитлабом, их задавать не надо!
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - cd frontend
-    - >
-      docker build
-      --build-arg VERSION=$VERSION
-      --tag $CI_REGISTRY_IMAGE/sausage-frontend-nginx:${VERSION}
-      .
-#      --file Dockerfile.nginx
-#    - docker push $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE/sausage-frontend-nginx:${VERSION}  
+
 
