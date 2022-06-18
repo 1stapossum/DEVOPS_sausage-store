@@ -1,0 +1,79 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 4
+  # Стратегия развёртывания. Recreate — удалит сначала все старые поды 
+  # Есть и более гибкая стратегии, например, RollingUpdate, которая будет обновлять поды порциями  
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-backend:1.0.90812
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: VAULT_HOST
+              value: 51.250.82.30
+            - name: VAULT_DEV_ROOT_TOKEN_ID
+              valueFrom:
+                secretKeyRef:
+                  name: vault
+                  key: VAULT_DEV_ROOT_TOKEN_ID
+            - name: PSQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: PSQL_HOST
+            - name: PSQL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: PSQL_PORT
+            - name: PSQL_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: PSQL_DBNAME
+
+          ports:
+            - name: backend
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 1
+            failureThreshold: 6
+      imagePullSecrets:
+        - name: docker-config-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: backend
+
