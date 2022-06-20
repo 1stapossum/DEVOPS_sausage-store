@@ -47,7 +47,8 @@ sausage-store-deploy:
     - echo "$KUBECONFIG" >> kubeconfig
   script:
     - kubectl  apply -f kubernetes/backend/ --kubeconfig=kubeconfig
-
+    - kubectl  apply -f kubernetes/backend-report/ --kubeconfig=kubeconfig
+    - kubectl  apply -f kubernetes/frontend/ --kubeconfig=kubeconfig
 
 #sausage-store-deploy:
 #  image: alpine:3.15.0
