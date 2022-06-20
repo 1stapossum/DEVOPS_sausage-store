@@ -48,7 +48,7 @@ sausage-store-deploy:
     - mkdir -p ~/.kube
     - echo "$KUBECONFIG" >> ~/.kube/config
   script:
-    - kubectl apply -f backend
+    - kubectl --kubeconfig='~/.kube/config' apply -f backend
 
 
 #sausage-store-deploy:
