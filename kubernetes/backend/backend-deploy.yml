@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-backend:1.0.90812
+          image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-backend:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: VAULT_HOST

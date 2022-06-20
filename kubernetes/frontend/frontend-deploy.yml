@@ -19,7 +19,7 @@ spec:
         commit: latest 
     spec: 
       containers: 
-        - image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-frontend:1.0.90825
+        - image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/sausage-frontend:latest
           name: frontend 
           imagePullPolicy: IfNotPresent
           volumeMounts: 
