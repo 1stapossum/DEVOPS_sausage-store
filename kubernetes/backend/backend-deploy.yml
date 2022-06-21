@@ -46,7 +46,6 @@ spec:
                 secretKeyRef:
                   name: backend
                   key: PSQL_DBNAME
-
           ports:
             - name: backend
               containerPort: 8080
