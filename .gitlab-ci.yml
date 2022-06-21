@@ -3,7 +3,6 @@ variables:
 
 stages:
   - module-pipelines
-  - deploy
 
 frontend:
   stage: module-pipelines
@@ -12,8 +11,8 @@ frontend:
       - "/frontend/.gitlab-ci.yml"
     strategy: depend #depend нужен, если какой-нибудь дочерний пайплайн свалился, мы знали, что общий пайплайн тоже идёт с ошибкой
   only:
-#    changes: #как только происходит изменение в папке frontend, запускается дочерний пайплайн, который лежит в этой папке
-#      - frontend/**/*
+    changes: #как только происходит изменение в папке frontend, запускается дочерний пайплайн, который лежит в этой папке
+      - frontend/**/*
 
 backend:
   stage: module-pipelines
@@ -22,8 +21,8 @@ backend:
       - "/backend/.gitlab-ci.yml"
     strategy: depend 
   only:
-#    changes:  #как только происходит изменение в папке backend, запускается дочерний пайплайн, который лежит в этой папке!!
-#      - backend/**/* 
+    changes:  #как только происходит изменение в папке backend, запускается дочерний пайплайн, который лежит в этой папке!!
+      - backend/**/* 
        
 backend-report:
   stage: module-pipelines
@@ -32,46 +31,8 @@ backend-report:
       - "/backend-report/.gitlab-ci.yml"
     strategy: depend
   only:
-#    changes:  #как только происходит изменение в папке backend, запускается дочерний пайплайн, который лежит в этой папке!!
-#      - backend-report/**/* 
-
-
-sausage-store-deploy:
-  image: alpine:3.15.0
-  stage: deploy
-  when: manual
-  before_script:
-    - apk add openssh-client bash
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-  script:
-    - echo ${CI_REGISTRY_IMAGE}
-    - echo ${CI_REGISTRY_USER}
-    - echo ${CI_REGISTRY_PASSWORD}
-    - echo ${CI_REGISTRY}
-    - touch .env
-    - echo PSQL_HOST=${PSQL_HOST} >> .env
-    - echo PSQL_USER=${PSQL_USER} >> .env
-    - echo PSQL_PORT=${PSQL_PORT} >> .env
-    - echo PSQL_DBNAME=${PSQL_DBNAME} >> .env
-    - echo VAULT_DEV_ROOT_TOKEN_ID=${VAULT_DEV_ROOT_TOKEN_ID} >> .env
-    - scp .env ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/.env
-    - scp docker-compose.yaml ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/docker-compose.yaml
-    - ssh ${DEV_USER}@${DEV_HOST}
-      "export "VAULT_DEV_ROOT_TOKEN_ID=${VAULT_DEV_ROOT_TOKEN_ID}";
-       export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
-       export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
-       export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
-       export "CI_REGISTRY=${CI_REGISTRY}";
-       export "VERSION=${VERSION}";
-       export "SPRING_DATASOURCE_USERNAME=${PSQL_USER}";
-       export "SPRING_DATASOURCE_PASSWORD=${PSQL_DB_PASSWORD}";
-       export "SPRING_DATA_MONGODB_URI=${MONGO_URI_WHOLE}";
-       /bin/bash -s " < ./app_deploy.sh
+    changes:  #как только происходит изменение в папке backend, запускается дочерний пайплайн, который лежит в этой папке!!
+      - backend-report/**/* 
 
     
 

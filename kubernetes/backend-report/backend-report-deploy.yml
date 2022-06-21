@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-report
+  labels:
+    app: backend-report
+spec:
+  replicas: 1
+  # Стратегия развёртывания. Recreate — удалит сначала все старые поды 
+  # Есть и более гибкая стратегии, например, RollingUpdate, которая будет обновлять поды порциями  
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: backend-report
+  template:
+    metadata:
+      labels:
+        app: backend-report
+    spec:
+      containers:
+        - name: backend-report
+          image: gitlab.praktikum-services.ru:5050/antinitrino/sausage-store/backend-report:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: VAULT_HOST
+              value: 51.250.82.30
+            - name: VAULT_DEV_ROOT_TOKEN_ID
+              valueFrom:
+                secretKeyRef:
+                  name: vault
+                  key: VAULT_DEV_ROOT_TOKEN_ID
+          ports:
+            - name: backend-report
+              containerPort: 8081
+      imagePullSecrets:
+        - name: docker-config-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-report
+  labels:
+    app: backend-report
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: backend-report
+
