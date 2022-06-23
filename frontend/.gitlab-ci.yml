@@ -8,9 +8,47 @@ include:
 stages:
   - build
   - test
+  - docker
 
 build-frontend:
   stage: build
+  script:
+  - cd frontend
+  - npm install
+  - npm run build
+  #- cd ..
+  - mkdir sausage-store-front-${VERSION}
+  - ls sausage-store-front-${VERSION}
+  - mv dist/frontend sausage-store-front-${VERSION}/public_html
+  - ls sausage-store-front-${VERSION}
+  - cd sausage-store-front-${VERSION}
+  - pwd
+  #- touch sausage-store-${VERSION}/public_html/test3.txt # Тест роллбэка. Работает. Роллбэк всмысле.
+  artifacts:
+    paths:
+    - ${CI_PROJECT_DIR}/frontend/sausage-store-front-${VERSION}/public_html
+
+sonarq-frontend-check:
+  stage: test
+  dependencies:
+    - build-frontend
+  image:
+    name: sonarsource/sonar-scanner-cli:4.6
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
+  script:
+    - cd frontend
+    - sonar-scanner
+      -Dsonar.projectKey=02_alexander_volokhov_frontend
+      -Dsonar.projectName=02_alexander_volokhov_frontend
+      -Dsonar.host.url=$SONAR_URL
+      -Dsonar.login=$SONAR_TOKEN
+#      -Dsonar.qualitygate.wait=true
+
+frontend-docker:
+  stage: docker
   image: docker:20.10.12-dind-rootless
   before_script:
     - until docker info; do sleep 1; done
@@ -32,28 +70,6 @@ build-frontend:
 #  rules:
 #      - changes:
 #           - frontend/*
-
-
-sonarq-frontend-check:
-  stage: test
-  dependencies:
-    - build-frontend
-  image:
-    name: sonarsource/sonar-scanner-cli:4.6
-    entrypoint: [""]
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-    GIT_DEPTH: "0"
-  script:
-    - cd frontend
-    - sonar-scanner
-      -Dsonar.projectKey=02_alexander_volokhov_frontend
-      -Dsonar.projectName=02_alexander_volokhov_frontend
-      -Dsonar.host.url=$SONAR_URL
-      -Dsonar.login=$SONAR_TOKEN
-#      -Dsonar.qualitygate.wait=true
-
-
    
 
 
