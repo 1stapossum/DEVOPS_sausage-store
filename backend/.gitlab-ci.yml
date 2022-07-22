@@ -60,7 +60,8 @@ sonarq-backend-check:
       -Dsonar.projectKey=02_alexander_volokhov_backend
       -Dsonar.projectName=02_alexander_volokhov_backend
       -Dsonar.host.url=$SONAR_URL
-      -Dsonar.login=$SONAR_TOKEN 
+      -Dsonar.login=$SONAR_TOKEN
+  allow_failure: true
 
 build-docker:
   stage: docker
